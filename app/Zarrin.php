@@ -27,7 +27,7 @@ class Zarrin
         $amount = $this->request['amount'];
         $data = array('MerchantID' => '955f0452-ef04-11e7-9ab3-005056a205be',
             'Amount' => $amount,
-            'CallbackURL' => 'http://pay.joyvpn.xyz',
+            'CallbackURL' => 'http://pay.joyvpn.xyz/zarrin/callback',
             'Description' => 'خرید سرویس شبکه شخصی مجازی');
         $jsonData = json_encode($data);
         $ch = curl_init('https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json');
