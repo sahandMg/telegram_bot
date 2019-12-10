@@ -21,8 +21,14 @@ class TelegramCommandController extends Controller
         $telegram = new \App\Repo\Telegram('844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8');
 
         $tgResp = $request->all();
-        $userId = $telegram->UserID();
-        $username = $telegram->Username();
+        if(isset($tgResp['message'])){
+            $userId = $tgResp['message']['from']['id'];
+            $username = $tgResp['message']['from']['username'];
+        }else{
+            $userId = $tgResp['callback_query']['from']['id'];
+            $username = $tgResp['callback_query']['from']['username'];
+        }
+
         // $isBot = $tgResp['message']['from']['is_bot'];
         $text = $telegram->Text();
         $chat_id = $telegram->ChatID();

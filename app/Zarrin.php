@@ -53,8 +53,9 @@ class Zarrin
                 $trans->status = 'unpaid';
                 $trans->amount = $amount;
                 $trans->authority = $result['Authority'];
-                $trans->username = $result['username'];
+                $trans->username = $this->request['username'];
                 $trans->plan_id = $this->request['plan_id'];
+                $trans->user_id = $this->request['user_id'];
                 if(isset($this->request['email'])){
 
                     $trans->email = $this->request['email'];
