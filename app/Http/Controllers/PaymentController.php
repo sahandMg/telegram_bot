@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Zarrin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
@@ -22,7 +23,7 @@ class PaymentController extends Controller
         if(is_null($trans)){
             return 'تراکنش نامعتبر';
         }
-        $code = $trans->code;
+        $code = 'sdadsda';
         return view('success',compact('code'));
     }
 
