@@ -20,7 +20,7 @@ class TelegramCommandController extends Controller
     public $telegram;
     public function __construct()
     {
-        $this->telegram = new \App\Repo\Telegram('844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8');
+        $this->telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
     }
 
     public function incoming(Request $request)
@@ -103,16 +103,6 @@ class TelegramCommandController extends Controller
                     if(strpos($text,'@') || (strlen($text) == 11)){
                         $pass = 1;
                     }else{
-//
-                        $options = [
-
-                            array($telegram->buildInlineKeyBoardButton('خرید حساب ۱ ماهه',"",'1')),
-                            array($telegram->buildInlineKeyBoardButton('خرید حساب ۳ ماهه اقتصادی','','3')),
-                            array($telegram->buildInlineKeyBoardButton('دریافت حساب رایگان تست','','0')),
-                            array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
-                            array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
-
-                        ];
                         $msg = [
                             'chat_id' => $chat_id,
                             'text' => 'ایمیل و یا شماره موبایل را نادرست وارد کردید',
@@ -120,8 +110,6 @@ class TelegramCommandController extends Controller
                         ];
                         $telegram->sendMessage($msg);
                     }
-
-
                     if(isset($pass)) {
                         $cached = Cache::get($chat_id);
 
@@ -129,14 +117,20 @@ class TelegramCommandController extends Controller
 
                         if ($cached['value'] == 1) {
 
-                            $plan = Plan::where('plan_id',1)->first();
+                            $plan = Plan::where('id',1)->first();
                             $price = $plan->price;
                             if (strpos($text, '@')) {
-
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             } else {
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             }
+                            $msg = [
+                                'chat_id' => $chat_id,
+                                'text' => 'لطفا منتظر بمانید',
+                                'parse_mode' => 'HTML',
+                            ];
+                            $telegram->sendMessage($msg);
+
                             $result = $zarrin->create();
                             if($result != 404){
                                 $option = [
@@ -150,6 +144,7 @@ class TelegramCommandController extends Controller
                                     'reply_markup' => $telegram->buildInlineKeyboard($option)
                                 ];
                                 $telegram->sendMessage($msg);
+                                return 200;
                             }else{
                                 $msg = [
                                     'chat_id' => $chat_id,
@@ -162,7 +157,7 @@ class TelegramCommandController extends Controller
                             }
 
                         } elseif ($cached['value'] == 3) {
-                            $plan = Plan::where('plan_id',2)->first();
+                            $plan = Plan::where('id',2)->first();
                             $price = $plan->price;
                             if (strpos($text, '@')) {
 
@@ -170,6 +165,12 @@ class TelegramCommandController extends Controller
                             } else {
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             }
+                            $msg = [
+                                'chat_id' => $chat_id,
+                                'text' => 'لطفا منتظر بمانید',
+                                'parse_mode' => 'HTML',
+                            ];
+                            $telegram->sendMessage($msg);
                             $result = $zarrin->create();
                             if($result != 404){
                                 $option = [
@@ -290,7 +291,7 @@ class TelegramCommandController extends Controller
             $telegram->sendMessage($msg);
         }elseif($data == '3'){
             Cache::put("$chat_id",['id'=>$chat_id,'value'=>3],1000);
-            $plan = Plan::where('id',3)->first();
+            $plan = Plan::where('id',2)->first();
             $price = $plan->price;
             $time = $plan->month;
             $msg_text = " انتخاب شما حساب $time ماهه با قیمت $price تومان می‌باشد. لطفا برای دریافت نام کاربری و کلمه عبور vpn، ایمیل و یا شماره موبایل  خود را ارسال کنید ";
@@ -314,6 +315,7 @@ class TelegramCommandController extends Controller
                 $account = Accounts::where('plan_id',3)->where('used',0)->first();
                 DB::beginTransaction();
                 $account->update(['used' => 1,'user_id' => $chat_id]);
+                DB::commit();
                 $telegram->sendMessage($msg);
                 $msg_text = ' username: '.$account->username;
                 $msg = [
@@ -338,7 +340,6 @@ class TelegramCommandController extends Controller
                 ];
                 $telegram->sendMessage($msg);
             }
-            DB::commit();
 
         }elseif($data == 'server_list'){
             $msg_text = 'Server 1 : fi.joyvpn.xyz';

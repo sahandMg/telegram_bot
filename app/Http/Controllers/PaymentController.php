@@ -23,7 +23,7 @@ class PaymentController extends Controller
         if(is_null($trans)){
             return 'تراکنش نامعتبر';
         }
-        $code = 'sdadsda';
+        $code = $trans->trans_id;
         return view('success',compact('code'));
     }
 

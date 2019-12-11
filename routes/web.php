@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use App\Transaction;
 use GuzzleHttp\Client as GuzzleClient;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -20,6 +21,6 @@ Route::get('payment/success/{transid}',['as'=>'RemotePaymentSuccess','uses'=>'Pa
 Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'PaymentController@FailedPayment']);
 
 Route::get('test',function (){
-    $dic = ['/start','refused','restart'];
-dd(in_array('/start',$dic));
+
+    return view('invoice');
 });

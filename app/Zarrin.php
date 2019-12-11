@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Morilog\Jalali\Jalalian;
 
 class Zarrin
 {
@@ -25,7 +26,7 @@ class Zarrin
 
 
         $amount = $this->request['amount'];
-        $data = array('MerchantID' => '955f0452-ef04-11e7-9ab3-005056a205be',
+        $data = array('MerchantID' => env('ZARRIN_TOKEN'),
             'Amount' => $amount,
             'CallbackURL' => 'http://pay.joyvpn.xyz/zarrin/callback',
             'Description' => 'خرید سرویس شبکه شخصی مجازی');
@@ -75,7 +76,6 @@ class Zarrin
     }
 
     public function verify(){
-
         $transactionId = $this->request['Authority'];
         $trans = Transaction::where('authority',$transactionId)->first();
         if(is_null($trans)){
@@ -83,7 +83,7 @@ class Zarrin
         }
 
 
-        $data = array('MerchantID' => '955f0452-ef04-11e7-9ab3-005056a205be', 'Authority' => $transactionId, 'Amount'=>$trans->amount);
+        $data = array('MerchantID' => env('ZARRIN_TOKEN'), 'Authority' => $transactionId, 'Amount'=>$trans->amount);
 
         $jsonData = json_encode($data);
         $ch = curl_init('https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json');
@@ -121,25 +121,67 @@ class Zarrin
         $orderID = $transactionId;
 
             // update created transaction record
+        DB::beginTransaction();
             DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
                 'status' => 'paid'
             ]);
-
-        $account = DB::table('accounts')->where('plan_id',$trans->plan_id)->where('used',0)->first();
+        $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
+        $account->update(['used'=>1,'user_id'=>$trans->user_id]);
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();
+        DB::commit();
+        $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+        $msg = [
+            'chat_id' => $trans->user_id,
+            'text' => 'با تشکر از خرید شما',
+            'parse_mode' => 'HTML',
+        ];
+        $msg2 = [
+            'chat_id' => $trans->user_id,
+            'text' => ' نام کاربری '.$account->username,
+            'parse_mode' => 'HTML',
+        ];
+        $msg3 = [
+            'chat_id' => $trans->user_id,
+            'text' => ' کلمه عبور '.$account->password,
+            'parse_mode' => 'HTML',
+        ];
+        $msg4 = [
+            'chat_id' => $trans->user_id,
+            'text' => ' انقضا '.\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y'),
+            'parse_mode' => 'HTML',
+        ];
+        $telegram->sendMessage($msg);
+        $telegram->sendMessage($msg2);
+        $telegram->sendMessage($msg3);
+        $telegram->sendMessage($msg4);
 
-        // TODO Transaction Mail
-//        Mail::send('email.remote.paymentConfirmed', ['plan' => $remotePlan, 'trans' => $trans], function ($message) use ($user) {
-//            $message->from(env('Sales_Mail'));
-//            $message->to($user->email);
-//            $message->subject('Payment Confirmed');
-//        });
-//
-//        Mail::send('email.newTrans', [], function ($message) use ($user) {
-//            $message->from(env('Sales_Mail'));
-//            $message->to(env('Admin_Mail'));
-//            $message->subject('New Payment');
-//        });
+        if($trans->email != null){
+
+            Mail::send('invoice', ['account' => $account, 'trans' => $trans], function ($message) use($trans) {
+                $message->from('support@joyvpn.xyz');
+                $message->to($trans->email);
+                $message->subject('رسید پرداخت');
+            });
+        }else{
+
+            $api = new \Kavenegar\KavenegarApi( env('SMS') );
+            $sender = "10008000800600";
+            $receptor = array($trans->phone);
+            $message =
+                 'خرید از JOY VPN'
+                . ' مبلغ ' . $trans->amount.' تومان '
+                .' نام کاربری '. $account->username
+                . ' کمه عبور '.$account->password;
+            $api->Send($sender,$receptor,$message);
+
+        }
+
+
+        Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
+            $message->from('support@joyvpn.xyz');
+            $message->to('sahand.mg.ne@gmail.com');
+            $message->subject('رسید پرداخت');
+        });
 
     }
 
