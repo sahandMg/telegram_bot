@@ -57,7 +57,7 @@ Route::get('get',function(){
     dd($user->where('name','shandddd')->first());
 });
 
-Route::get('hook',function (Request $request){
+Route::post('hook',function (Request $request){
     $body = $request->all();
     $msg = $body[0];
     $msg2 = $body[1];

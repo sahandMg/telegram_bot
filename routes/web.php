@@ -23,14 +23,9 @@ Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'
 
 Route::get('test',function (){
 
-    $trans = Transaction::find(2);
-    $account = \App\Accounts::find(2);
-    $plan = \App\Plan::find(2);
-    Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
-        $message->from('support@joyvpn.xyz');
-        $message->to($trans->email);
-        $message->subject('رسید پرداخت');
-    });
+    $trans = Transaction::find(25);
+    $zarrin = new \App\Zarrin([]);
+    $zarrin->ZarrinPaymentConfirm($trans);
 
-    return view('invoice');
+    return 200;
 });

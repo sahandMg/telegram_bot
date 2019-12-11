@@ -3,6 +3,7 @@ namespace App;
 
 
 use App\Accounts;
+use App\Jobs\sendNotif;
 use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -113,85 +114,9 @@ class Zarrin
             }
         }
     }
-    private function ZarrinPaymentConfirm($trans)
+    public function ZarrinPaymentConfirm($trans)
     {
-
-        $transactionId = $trans->trans_id;
-        $orderID = $transactionId;
-
-            // update created transaction record
-        DB::beginTransaction();
-            DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
-                'status' => 'paid'
-            ]);
-        $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
-        $account->update(['used'=>1,'user_id'=>$trans->user_id]);
-        $plan = DB::table('plans')->where('id',$trans->plan_id)->first();
-        DB::commit();
-
-        $msg = [
-            'chat_id' => $trans->user_id,
-            'text' => 'با تشکر از خرید شما',
-            'parse_mode' => 'HTML',
-        ];
-        $msg2 = [
-            'chat_id' => $trans->user_id,
-            'text' => ' نام کاربری '.$account->username,
-            'parse_mode' => 'HTML',
-        ];
-        $msg3 = [
-            'chat_id' => $trans->user_id,
-            'text' => ' کلمه عبور '.$account->password,
-            'parse_mode' => 'HTML',
-        ];
-        $msg4 = [
-            'chat_id' => $trans->user_id,
-            'text' => ' انقضا '.\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y'),
-            'parse_mode' => 'HTML',
-        ];
-
-    try{
-        $data = array($msg,$msg2,$msg3,$msg4);
-        $jsonData = json_encode($data);
-        $ch = curl_init('http://vitamin-g.ir/api/hook');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($jsonData)
-        ));
-        curl_exec($ch);
-    }catch (\Exception $exception){
-
-    }
-
-        if($trans->email != null){
-
-            Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
-//                $message->from('support@joyvpn.xyz');
-                $message->to($trans->email);
-                $message->subject('رسید پرداخت');
-            });
-        }else{
-
-            $api = new \Kavenegar\KavenegarApi( env('SMS') );
-            $sender = "10008000800600";
-            $receptor = array($trans->phone);
-            $message =
-                 'خرید از JOY VPN'
-                . ' مبلغ ' . $trans->amount.' تومان '
-                .' نام کاربری '. $account->username
-                . ' کمه عبور '.$account->password;
-            $api->Send($sender,$receptor,$message);
-
-        }
-
-
-        Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
-//            $message->from('support@joyvpn.xyz');
-            $message->to('sahand.mg.ne@gmail.com');
-            $message->subject('رسید پرداخت');
-        });
+        sendNotif::dispatch($trans);
 
     }
 
