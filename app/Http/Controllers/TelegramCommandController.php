@@ -128,6 +128,7 @@ class TelegramCommandController extends Controller
                         Cache::forget($chat_id);
 
                         if ($cached['value'] == 1) {
+
                             $plan = Plan::where('plan_id',1)->first();
                             $price = $plan->price;
                             if (strpos($text, '@')) {
@@ -156,10 +157,12 @@ class TelegramCommandController extends Controller
                                     'parse_mode' => 'HTML',
                                 ];
                                 $telegram->sendMessage($msg);
+
+                                return 200;
                             }
 
                         } elseif ($cached['value'] == 3) {
-                            $plan = Plan::where('plan_id',3)->first();
+                            $plan = Plan::where('plan_id',2)->first();
                             $price = $plan->price;
                             if (strpos($text, '@')) {
 
@@ -187,6 +190,7 @@ class TelegramCommandController extends Controller
                                     'parse_mode' => 'HTML',
                                 ];
                                 $telegram->sendMessage($msg);
+                                return 200;
                             }
                         }
                     }

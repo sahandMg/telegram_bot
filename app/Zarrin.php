@@ -48,7 +48,7 @@ class Zarrin
         } else {
             if ($result["Status"] == '100' ) {
 
-                DB::transaction(function () use($amount,$result) {
+                DB::beginTransaction();
                     $trans = new Transaction();
                     $trans->trans_id = 'Zarrin_' . strtoupper(uniqid());
                     $trans->status = 'unpaid';
@@ -65,7 +65,7 @@ class Zarrin
                         $trans->phone = $this->request['phone'];
                     }
                     $trans->save();
-                });
+                DB::commit();
                 return $result;
             } else {
                 return 404;
@@ -119,12 +119,11 @@ class Zarrin
 
         $transactionId = $trans->trans_id;
         $orderID = $transactionId;
-        DB::transaction(function () use($orderID) {
+
             // update created transaction record
             DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
                 'status' => 'paid'
             ]);
-        });
 
         $account = DB::table('accounts')->where('plan_id',$trans->plan_id)->where('used',0)->first();
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();

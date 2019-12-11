@@ -43,7 +43,7 @@ Route::get('key',function(){
     DB::transaction(function () {
 
         $user = new \App\User();
-        $user->name = 'shandddd';
+        $user->name = 'shandddsd';
         $user->email = 's@dsas';
         $user->password = 'dsadas';
         $user->save();
