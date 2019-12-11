@@ -19,8 +19,9 @@
         * { margin: 0px; padding: 0px; }
         body {
             background: #ecf1f5;
-            font:14px "Open Sans", sans-serif;
+            font:14px B Nazanin;
             text-align:center;
+
         }
 
         .tile{
@@ -49,7 +50,7 @@
         }
 
         .banner-img img {
-            width: 100%;
+            /*width: 100%;*/
             border-radius: 5px;
         }
 
@@ -88,7 +89,7 @@
             border-top:1px solid #ebeff2;
             background:#f7f8fa;
             overflow:auto;
-            padding:15px 0;
+            padding:14px 0;
             font-size:16px;
             color:#59687f;
             font-weight:600;
@@ -96,7 +97,7 @@
         }
         .stats div{
             border-right:1px solid #ebeff2;
-            width: 33.33333%;
+            width: 30%;
             float:left;
             text-align:center
         }
@@ -152,33 +153,33 @@
                 <div class="wrapper">
                     <div class="header">رسید مشتری</div>
 
-                    <div class="banner-img">
-                        <img src="{{URL::asset('img/joyvpn.jpg')}}" alt="joyVpn LOGO">
+                    <div class="banner-img" style="text-align: center">
+                        <img width="400" height="auto" src="{{URL::asset('img/joyvpn.jpg')}}" alt="joyVpn LOGO">
                     </div>
 
                     <div class="dates">
                         <div class="start">
-                            <strong>فعالسازی</strong>{{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now())->format('%B %d، %Y')}}
+                            <strong>فعالسازی</strong>{{\Morilog\Jalali\Jalalian::now()->format('%B %d، %Y')}}
                             <span></span>
                         </div>
                         <div class="ends">
                             {{--<strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now()->addMonths($plan->month))}}--}}
-                            <strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now()->addMonths($plan->month)->format('%B %d، %Y'))}}
+                            <strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y')}}
                         </div>
                     </div>
 
                     <div class="stats">
 
                         <div>
-                            <strong>مبلغ پرداختی</strong> {{$trans->amount}}
+                            <strong>مبلغ پرداختی</strong> <span style="font-family: Arial">{{$trans->amount}}</span>
                         </div>
 
                         <div>
-                            <strong>نام‌کاربری</strong> {{$account->username}}
+                            <strong>نام‌کاربری</strong> <span style="font-family: Arial">{{$account->username}}</span>
                         </div>
 
                         <div>
-                            <strong>کلمه عبور</strong> {{$account->password}}
+                            <strong>کلمه عبور</strong> <span style="font-family: Arial">{{$account->password}}</span>
                         </div>
 
                     </div>
@@ -187,9 +188,6 @@
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"></div>
-
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"></div>
 
     </div>
 </div>
