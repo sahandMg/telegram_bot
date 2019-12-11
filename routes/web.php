@@ -25,7 +25,8 @@ Route::get('test',function (){
 
     $trans = Transaction::find(2);
     $account = \App\Accounts::find(2);
-    Mail::send('invoice', ['account' => $account, 'trans' => $trans], function ($message) use($trans) {
+    $plan = \App\Plan::find(2);
+    Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
         $message->from('support@joyvpn.xyz');
         $message->to($trans->email);
         $message->subject('رسید پرداخت');

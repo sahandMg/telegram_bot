@@ -167,7 +167,7 @@ class Zarrin
 
         if($trans->email != null){
 
-            Mail::send('invoice', ['account' => $account, 'trans' => $trans], function ($message) use($trans) {
+            Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
                 $message->from('support@joyvpn.xyz');
                 $message->to($trans->email);
                 $message->subject('رسید پرداخت');
