@@ -12,6 +12,7 @@
 */
 use App\Transaction;
 use GuzzleHttp\Client as GuzzleClient;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -21,6 +22,14 @@ Route::get('payment/success/{transid}',['as'=>'RemotePaymentSuccess','uses'=>'Pa
 Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'PaymentController@FailedPayment']);
 
 Route::get('test',function (){
+
+    $trans = Transaction::find(2);
+    $account = \App\Accounts::find(2);
+    Mail::send('invoice', ['account' => $account, 'trans' => $trans], function ($message) use($trans) {
+        $message->from('support@joyvpn.xyz');
+        $message->to($trans->email);
+        $message->subject('رسید پرداخت');
+    });
 
     return view('invoice');
 });

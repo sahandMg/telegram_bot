@@ -148,7 +148,7 @@ class TelegramCommandController extends Controller
                             }else{
                                 $msg = [
                                     'chat_id' => $chat_id,
-                                    'text' => 'مشکلی در ارتباط با درگاه پیش آمده',
+                                    'text' => 'مشکلی در ارتباط با درگاه پیش آمده است. لطفا دوباره تلاش کنید',
                                     'parse_mode' => 'HTML',
                                 ];
                                 $telegram->sendMessage($msg);

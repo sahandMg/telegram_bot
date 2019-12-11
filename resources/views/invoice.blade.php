@@ -158,12 +158,12 @@
 
                     <div class="dates">
                         <div class="start">
-                            <strong>فعالسازی</strong>{{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now())}}
+                            <strong>فعالسازی</strong>{{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now())->format('%B %d، %Y')}}
                             <span></span>
                         </div>
                         <div class="ends">
                             {{--<strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now()->addMonths($plan->month))}}--}}
-                            <strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now()->addMonths($plan->month))}}
+                            <strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now()->addMonths($plan->month)->format('%B %d، %Y'))}}
                         </div>
                     </div>
 

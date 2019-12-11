@@ -84,7 +84,6 @@ class Zarrin
 
 
         $data = array('MerchantID' => env('ZARRIN_TOKEN'), 'Authority' => $transactionId, 'Amount'=>$trans->amount);
-
         $jsonData = json_encode($data);
         $ch = curl_init('https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json');
         curl_setopt($ch, CURLOPT_USERAGENT, 'ZarinPal Rest Api v1');
@@ -129,7 +128,7 @@ class Zarrin
         $account->update(['used'=>1,'user_id'=>$trans->user_id]);
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();
         DB::commit();
-        $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+
         $msg = [
             'chat_id' => $trans->user_id,
             'text' => 'با تشکر از خرید شما',
@@ -150,10 +149,21 @@ class Zarrin
             'text' => ' انقضا '.\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y'),
             'parse_mode' => 'HTML',
         ];
-        $telegram->sendMessage($msg);
-        $telegram->sendMessage($msg2);
-        $telegram->sendMessage($msg3);
-        $telegram->sendMessage($msg4);
+
+    try{
+        $data = array($msg,$msg2,$msg3,$msg4);
+        $jsonData = json_encode($data);
+        $ch = curl_init('http://vitamin-g.ir/api/hook');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($jsonData)
+        ));
+        curl_exec($ch);
+    }catch (\Exception $exception){
+
+    }
 
         if($trans->email != null){
 

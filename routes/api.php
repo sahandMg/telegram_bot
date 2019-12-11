@@ -56,3 +56,16 @@ Route::get('get',function(){
     $user = new \App\User();
     dd($user->where('name','shandddd')->first());
 });
+
+Route::get('hook',function (Request $request){
+    $body = $request->all();
+    $msg = $body[0];
+    $msg2 = $body[1];
+    $msg3 = $body[2];
+    $msg4 = $body[3];
+    $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+    $telegram->sendMessage($msg);
+    $telegram->sendMessage($msg2);
+    $telegram->sendMessage($msg3);
+    $telegram->sendMessage($msg4);
+});
