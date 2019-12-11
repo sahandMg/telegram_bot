@@ -23,9 +23,5 @@ Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'
 
 Route::get('test',function (){
 
-    $trans = Transaction::find(25);
-    $zarrin = new \App\Zarrin([]);
-    $zarrin->ZarrinPaymentConfirm($trans);
 
-    return 200;
 });

@@ -114,7 +114,7 @@ class Zarrin
             }
         }
     }
-    public function ZarrinPaymentConfirm($trans)
+    protected function ZarrinPaymentConfirm($trans)
     {
         sendNotif::dispatch($trans);
 
