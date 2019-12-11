@@ -6,6 +6,7 @@ use Telegram\Bot\Api;
 use GuzzleHttp\Client as GuzzleClient;
 use Psr\Http\Message\ResponseInterface;
 use \Illuminate\Support\Facades\Cache;
+use \Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,7 +20,7 @@ use \Illuminate\Support\Facades\Cache;
 
 Route::get('check', function() {
 
-        dd(__DIR__);
+    dd(__DIR__);
     // $telegram = new Api(env('BOT_TOKEN'));
     // $updates = $telegram->getMe();
 
@@ -34,8 +35,24 @@ Route::post('tg/update','TelegramCommandController@incoming');
 
 
 Route::get('key',function(){
-    $telegram = new \App\Repo\Telegram('844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8');
-    dd(is_numeric('3213dd12'));
 
 
+
+//     DB::commit();
+
+    DB::transaction(function () {
+
+        $user = new \App\User();
+        $user->name = 'shandddd';
+        $user->email = 's@dsas';
+        $user->password = 'dsadas';
+        $user->save();
+    }, 5);
+});
+
+Route::get('get',function(){
+
+
+    $user = new \App\User();
+    dd($user->where('name','shandddd')->first());
 });

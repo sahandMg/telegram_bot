@@ -48,22 +48,24 @@ class Zarrin
         } else {
             if ($result["Status"] == '100' ) {
 
-                $trans = new Transaction();
-                $trans->trans_id = 'Zarrin_'.strtoupper(uniqid());
-                $trans->status = 'unpaid';
-                $trans->amount = $amount;
-                $trans->authority = $result['Authority'];
-                $trans->username = $this->request['username'];
-                $trans->plan_id = $this->request['plan_id'];
-                $trans->user_id = $this->request['user_id'];
-                if(isset($this->request['email'])){
+                DB::transaction(function () use($amount,$result) {
+                    $trans = new Transaction();
+                    $trans->trans_id = 'Zarrin_' . strtoupper(uniqid());
+                    $trans->status = 'unpaid';
+                    $trans->amount = $amount;
+                    $trans->authority = $result['Authority'];
+                    $trans->username = $this->request['username'];
+                    $trans->plan_id = $this->request['plan_id'];
+                    $trans->user_id = $this->request['user_id'];
+                    if (isset($this->request['email'])) {
 
-                    $trans->email = $this->request['email'];
-                }else{
+                        $trans->email = $this->request['email'];
+                    } else {
 
-                    $trans->phone = $this->request['phone'];
-                }
-                $trans->save();
+                        $trans->phone = $this->request['phone'];
+                    }
+                    $trans->save();
+                });
                 return $result;
             } else {
                 return 404;
@@ -117,10 +119,12 @@ class Zarrin
 
         $transactionId = $trans->code;
         $orderID = $transactionId;
-        // update created transaction record
-        DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
-            'status' => 'paid'
-        ]);
+        DB::transaction(function () use($orderID) {
+            // update created transaction record
+            DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
+                'status' => 'paid'
+            ]);
+        });
 
         $account = DB::table('accounts')->where('plan_id',$trans->plan_id)->where('used',0)->first();
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();

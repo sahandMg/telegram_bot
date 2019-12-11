@@ -20,18 +20,6 @@ Route::get('payment/success/{transid}',['as'=>'RemotePaymentSuccess','uses'=>'Pa
 Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'PaymentController@FailedPayment']);
 
 Route::get('test',function (){
-
-$text = 'The text you are desperate to analyze :)';
-
-$process = new Process("python ".app_path(). "/Repo/test.py \"{$text}\"");
-$process->run();
-
-// executes after the command finishes
-if (!$process->isSuccessful()) {
-    throw new ProcessFailedException($process);
-}
-
-echo $process->getOutput();
-// Result (string): {'neg':
-    
+    $dic = ['/start','refused','restart'];
+dd(in_array('/start',$dic));
 });
