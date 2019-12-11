@@ -127,19 +127,20 @@ class TelegramCommandController extends Controller
                         Cache::forget($chat_id);
 
                         if ($cached['value'] == 1) {
-
+                            $plan = Plan::where('plan_id',1)->first();
+                            $price = $plan->price;
                             if (strpos($text, '@')) {
 
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => 10000, 'email' => $text, 'plan_id' => 1]);
+                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             } else {
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => 10000, 'phone' => $text, 'plan_id' => 1]);
+                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             }
                             $result = $zarrin->create();
                             if($result != 404){
                                 $option = [
                                     array($telegram->buildInlineKeyboardButton('هدایت به درگاه پرداخت', 'https://www.zarinpal.com/pg/StartPay/' . $result["Authority"]), $telegram->buildInlineKeyboardButton('انصراف', '', 'refused'))
                                 ];
-                                $msg_text = 'مبلغ قابل پرداخت : ۱۰۰۰۰ تومان';
+                                $msg_text = " مبلغ قابل پرداخت : $price تومان ";
                                 $msg = [
                                     'chat_id' => $chat_id,
                                     'text' => $msg_text,
@@ -157,25 +158,35 @@ class TelegramCommandController extends Controller
                             }
 
                         } elseif ($cached['value'] == 3) {
-
+                            $plan = Plan::where('plan_id',3)->first();
+                            $price = $plan->price;
                             if (strpos($text, '@')) {
 
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => 20000, 'email' => $text, 'plan_id' => 2]);
+                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             } else {
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => 20000, 'phone' => $text, 'plan_id' => 2]);
+                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             }
                             $result = $zarrin->create();
-                            $option = [
-                                array($telegram->buildInlineKeyboardButton('هدایت به درگاه پرداخت', 'https://www.zarinpal.com/pg/StartPay/' . $result["Authority"]), $telegram->buildInlineKeyboardButton('انصراف', '', 'refused'))
-                            ];
-                            $msg_text = 'مبلغ قابل پرداخت : ۲۰۰۰۰ تومان';
-                            $msg = [
-                                'chat_id' => $chat_id,
-                                'text' => $msg_text,
-                                'parse_mode' => 'HTML',
-                                'reply_markup' => $telegram->buildInlineKeyboard($option)
-                            ];
-                            $telegram->sendMessage($msg);
+                            if($result != 404){
+                                $option = [
+                                    array($telegram->buildInlineKeyboardButton('هدایت به درگاه پرداخت', 'https://www.zarinpal.com/pg/StartPay/' . $result["Authority"]), $telegram->buildInlineKeyboardButton('انصراف', '', 'refused'))
+                                ];
+                                $msg_text = " مبلغ قابل پرداخت : $price تومان ";
+                                $msg = [
+                                    'chat_id' => $chat_id,
+                                    'text' => $msg_text,
+                                    'parse_mode' => 'HTML',
+                                    'reply_markup' => $telegram->buildInlineKeyboard($option)
+                                ];
+                                $telegram->sendMessage($msg);
+                            }else{
+                                $msg = [
+                                    'chat_id' => $chat_id,
+                                    'text' => 'مشکلی در ارتباط با درگاه پیش آمده',
+                                    'parse_mode' => 'HTML',
+                                ];
+                                $telegram->sendMessage($msg);
+                            }
                         }
                     }
                 }
@@ -295,8 +306,8 @@ class TelegramCommandController extends Controller
             $freeAccount = Accounts::where('user_id',$chat_id)->first();
             if(is_null($freeAccount)){
 
-                $account = Accounts::where('plan_id',3)->where('used','!=',0)->first();
-                $account->update(['used' => 0,'user_id' => $chat_id]);
+                $account = Accounts::where('plan_id',3)->where('used',0)->first();
+                $account->update(['used' => 1,'user_id' => $chat_id]);
                 $telegram->sendMessage($msg);
                 $msg_text = ' username: '.$account->username;
                 $msg = [
