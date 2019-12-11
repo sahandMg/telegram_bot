@@ -9,6 +9,7 @@ use App\Zarrin;
 use Illuminate\Http\Request;
 use App\Repo\TelegramErrorLogger;
 use \Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Telegram\Bot\Api;
 class TelegramCommandController extends Controller
 {
@@ -307,6 +308,7 @@ class TelegramCommandController extends Controller
             if(is_null($freeAccount)){
 
                 $account = Accounts::where('plan_id',3)->where('used',0)->first();
+                DB::beginTransaction();
                 $account->update(['used' => 1,'user_id' => $chat_id]);
                 $telegram->sendMessage($msg);
                 $msg_text = ' username: '.$account->username;
@@ -332,6 +334,7 @@ class TelegramCommandController extends Controller
                 ];
                 $telegram->sendMessage($msg);
             }
+            DB::commit();
 
         }elseif($data == 'server_list'){
             $msg_text = 'Server 1 : fi.joyvpn.xyz';
