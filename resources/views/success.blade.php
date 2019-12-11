@@ -109,14 +109,14 @@
                 <br>
                 <h4 style="margin: -10px 0">شماره تراکنش</h4>
                 <br>
-                <p style="text-align: center;margin: 10px 0;font-size: 15px">{{$code}}</p>
+                <p style="text-align: center;margin: 10px 0;font-size: 15px;font-family: Arial">{{$code}}</p>
                 <p style="text-align: center;margin: 10px 0;font-size: 20px;">جزيات حساب به ایمیل و یا شماره موبایلتان ارسال می‌شود</p>
             </div>
             <div class="modal-body">
                 <p class="text-center"></p>
             </div>
             <div class="modal-footer">
-                <a href="https://t.me/Sahand_MG"></a><button class="btn btn-success btn-block" data-dismiss="modal">تماس با پشتیبانی</button>
+                <a href="https://t.me/Sahand_MG"><button class="btn btn-success btn-block" data-dismiss="modal">تماس با پشتیبانی</button></a>
             </div>
         </div>
     </div>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Accounts;
+use App\Plan;
 use App\Transaction;
 use App\Zarrin;
 use Illuminate\Http\Request;
@@ -260,7 +262,10 @@ class TelegramCommandController extends Controller
         $chat_id = $this->telegram->ChatID();
         if($data == '1'){
             Cache::put("$chat_id",['id'=>$chat_id,'value'=>1],1000);
-            $msg_text = 'انتخاب شما حساب ۱ ماهه با قیمت ۱۰۰۰۰ تومان می‌باشد. لطفا برای دریافت نام کاربری و کلمه عبور vpn، ایمیل و یا شماره موبایل  خود را ارسال کنید';
+            $plan = Plan::where('id',1)->first();
+            $price = $plan->price;
+            $time = $plan->month;
+            $msg_text = " انتخاب شما حساب $time ماهه با قیمت $price تومان می‌باشد. لطفا برای دریافت نام کاربری و کلمه عبور vpn، ایمیل و یا شماره موبایل  خود را ارسال کنید ";
             $msg = [
                 'chat_id' => $chat_id,
                 'text' => $msg_text,
@@ -269,7 +274,10 @@ class TelegramCommandController extends Controller
             $telegram->sendMessage($msg);
         }elseif($data == '3'){
             Cache::put("$chat_id",['id'=>$chat_id,'value'=>3],1000);
-            $msg_text = 'انتخاب شما حساب ۳ ماهه اقتصادی با قیمت ۲۰۰۰۰ تومان می‌باشد. لطفا برای دریافت نام کاربری و کلمه عبور vpn، ایمیل و یا شماره موبایل خود را ارسال کنید';
+            $plan = Plan::where('id',3)->first();
+            $price = $plan->price;
+            $time = $plan->month;
+            $msg_text = " انتخاب شما حساب $time ماهه با قیمت $price تومان می‌باشد. لطفا برای دریافت نام کاربری و کلمه عبور vpn، ایمیل و یا شماره موبایل  خود را ارسال کنید ";
             $msg = [
                 'chat_id' => $chat_id,
                 'text' => $msg_text,
@@ -284,21 +292,36 @@ class TelegramCommandController extends Controller
                 'text' => $msg_text,
                 'parse_mode' => 'HTML',
             ];
-            $telegram->sendMessage($msg);
-            $msg_text = ' username: fi844889 ';
-            $msg = [
-                'chat_id' => $chat_id,
-                'text' => $msg_text,
-                'parse_mode' => 'HTML',
-            ];
-            $telegram->sendMessage($msg);
-            $msg_text = 'password : 508273';
-            $msg = [
-                'chat_id' => $chat_id,
-                'text' => $msg_text,
-                'parse_mode' => 'HTML',
-            ];
-            $telegram->sendMessage($msg);
+            $freeAccount = Accounts::where('user_id',$chat_id)->first();
+            if(is_null($freeAccount)){
+
+                $account = Accounts::where('plan_id',3)->where('used','!=',0)->first();
+                $account->update(['used' => 0,'user_id' => $chat_id]);
+                $telegram->sendMessage($msg);
+                $msg_text = ' username: '.$account->username;
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+                $msg_text = 'password : '.$account->password;
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+            }else{
+                $msg_text = 'شما پیش‌ از این حساب رایگان را دریافت کرده‌اید';
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+            }
+
         }elseif($data == 'server_list'){
             $msg_text = 'Server 1 : fi.joyvpn.xyz';
             $msg = [

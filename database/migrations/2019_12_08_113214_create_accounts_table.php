@@ -20,7 +20,7 @@ class CreateAccountsTable extends Migration
             $table->unsignedInteger('plan_id');
             $table->foreign('plan_id')->references('id')->on('plans');
             $table->boolean('used')->default(0);
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('user_id')->nullable();
             $table->timestamps();
         });
     }
