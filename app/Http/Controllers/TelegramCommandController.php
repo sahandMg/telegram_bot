@@ -122,7 +122,7 @@ class TelegramCommandController extends Controller
                             if (strpos($text, '@')) {
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             } else {
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
+                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'phone' => $text, 'plan_id' => $plan->id]);
                             }
                             $msg = [
                                 'chat_id' => $chat_id,
