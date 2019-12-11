@@ -106,18 +106,18 @@ class Zarrin
 
                 $this->ZarrinPaymentConfirm($trans);
 
-                return redirect()->route('RemotePaymentSuccess',['transid'=>$trans->code]);
+                return redirect()->route('RemotePaymentSuccess',['transid'=>$trans->trans_id]);
 
             } else {
 
-                return redirect()->route('RemotePaymentCanceled', ['transid' => $trans->code]);
+                return redirect()->route('RemotePaymentCanceled', ['transid' => $trans->trans_id]);
             }
         }
     }
     private function ZarrinPaymentConfirm($trans)
     {
 
-        $transactionId = $trans->code;
+        $transactionId = $trans->trans_id;
         $orderID = $transactionId;
         DB::transaction(function () use($orderID) {
             // update created transaction record
