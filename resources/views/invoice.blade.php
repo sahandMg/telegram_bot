@@ -171,7 +171,7 @@
                     <div class="stats">
 
                         <div>
-                            <strong>مبلغ پرداختی</strong> <span style="font-family: Arial">{{$trans->amount}}</span>
+                            <strong>مبلغ پرداختی</strong> <span style="font-family: Arial"> تومان {{$trans->amount}}</span>
                         </div>
 
                         <div>

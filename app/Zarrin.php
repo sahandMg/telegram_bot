@@ -168,7 +168,7 @@ class Zarrin
         if($trans->email != null){
 
             Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
-                $message->from('support@joyvpn.xyz');
+//                $message->from('support@joyvpn.xyz');
                 $message->to($trans->email);
                 $message->subject('رسید پرداخت');
             });
@@ -188,7 +188,7 @@ class Zarrin
 
 
         Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
-            $message->from('support@joyvpn.xyz');
+//            $message->from('support@joyvpn.xyz');
             $message->to('sahand.mg.ne@gmail.com');
             $message->subject('رسید پرداخت');
         });
