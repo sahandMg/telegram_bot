@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Accounts;
+use App\Num2En;
 use App\Plan;
 use App\Transaction;
 use App\Zarrin;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Repo\TelegramErrorLogger;
 use \Illuminate\Support\Facades\Cache;
@@ -123,6 +125,7 @@ class TelegramCommandController extends Controller
                             if (strpos($text, '@')) {
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             } else {
+                                $text = Num2En::en($text);
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'phone' => $text, 'plan_id' => $plan->id]);
                             }
                             $msg = [
@@ -315,7 +318,7 @@ class TelegramCommandController extends Controller
 
                 $account = Accounts::where('plan_id',3)->where('used',0)->first();
                 DB::beginTransaction();
-                $account->update(['used' => 1,'user_id' => $chat_id]);
+                $account->update(['used' => 1,'user_id' => $chat_id,'expires_at'=> Carbon::now()->addDays(3)]);
                 DB::commit();
                 $telegram->sendMessage($msg);
                 $msg_text = ' username: '.$account->username;

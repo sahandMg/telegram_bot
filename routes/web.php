@@ -11,6 +11,7 @@
 |
 */
 use App\Accounts;
+use App\Num2En;
 use App\Transaction;
 use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleClient;
@@ -31,7 +32,7 @@ Route::get('run',function (){
 Route::get('test',function (){
     $trans = Transaction::find(24);
     $lastAccount = Accounts::where('user_id',$trans->user_id)->where('used',1)->first();
-    dd(Carbon::now()->diffInDays(Carbon::parse($lastAccount->updated_at)));
+    dd(Carbon::now()->diffInDays(Carbon::now()->addDays(20)));
     $lastAccount->delete();
     // it means that user updated his account. it's NOT a new account
     dd(Carbon::now()->diffInDays(Carbon::parse($lastAccount->updated_at)));
