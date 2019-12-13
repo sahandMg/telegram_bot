@@ -82,6 +82,9 @@ class Zarrin
         if(is_null($trans)){
             return 'کد تراکنش نادرست است';
         }
+        if($trans->status == 'paid'){
+            return 'تراکنش تکراری است';
+        }
 
 
         $data = array('MerchantID' => env('ZARRIN_TOKEN'), 'Authority' => $transactionId, 'Amount'=>$trans->amount);

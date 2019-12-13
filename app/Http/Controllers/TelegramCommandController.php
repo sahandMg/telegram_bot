@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Repo\TelegramErrorLogger;
 use \Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Spatie\Emoji\Emoji;
 use Telegram\Bot\Api;
 class TelegramCommandController extends Controller
 {
@@ -229,9 +230,9 @@ class TelegramCommandController extends Controller
 
         $options = [
 
-            array($telegram->buildInlineKeyBoardButton('خرید حساب ۱ ماهه',"",'1')),
-            array($telegram->buildInlineKeyBoardButton('خرید حساب ۳ ماهه اقتصادی','','3')),
-            array($telegram->buildInlineKeyBoardButton('دریافت حساب رایگان تست','','0')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' خرید حساب ۱ ماهه '.Emoji::largeOrangeDiamond(),"",'1')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::largeBlueDiamond().' خرید حساب ۳ ماهه اقتصادی '.Emoji::largeBlueDiamond(),'','3')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
             array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
             array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
 
@@ -239,7 +240,7 @@ class TelegramCommandController extends Controller
 
         $msg = [
             'chat_id' => $chat_id,
-            'text' => 'سلام. از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی طرح مورد نظر کلیک کنید',
+            'text' => Emoji::smilingFaceWithSmilingEyes().'سلام. از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی طرح مورد نظر کلیک کنید ',
             'parse_mode' => 'HTML',
             'reply_markup' => $telegram->buildInlineKeyboard($options),
         ];

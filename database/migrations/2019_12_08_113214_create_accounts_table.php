@@ -21,6 +21,7 @@ class CreateAccountsTable extends Migration
             $table->foreign('plan_id')->references('id')->on('plans');
             $table->boolean('used')->default(0);
             $table->unsignedInteger('user_id')->nullable();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }
