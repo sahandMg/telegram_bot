@@ -23,6 +23,7 @@ class CreateTransactionsTable extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('username');
+            $table->string('service');
             $table->string('status')->default('unpaid');
             $table->timestamps();
         });

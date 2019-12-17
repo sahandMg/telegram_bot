@@ -64,6 +64,11 @@
         </style>
     </head>
     <body>
+    <form action="{{route('getfile')}}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_token" value="{{csrf_token()}}">
+        <input type="file" name="fileName">
+        <button type="submit">Send</button>
+    </form>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Accounts;
+use App\Ovpn;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -43,14 +44,28 @@ class sendNotif implements ShouldQueue
         DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
             'status' => 'paid'
         ]);
-        $account = Accounts::where('user_id',$trans->user_id)->where('used',1)->first();
-        // it means that user updated his account. it's NOT a new account
-        if($account !== null){
-            $account->update(['expires_at'=> Carbon::parse($account->expires_at)->addMonths($trans->plan->month)]);
-        }else{
+        if($trans->service == 'cisco'){
+            $account = Accounts::where('user_id',$trans->user_id)->where('used',1)->first();
+            // it means that user updated his account. it's NOT a new account
+            if($account !== null){
+                $account->update(['expires_at'=> Carbon::parse($account->expires_at)->addMonths($trans->plan->month)]);
+            }else{
 
-            $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
-            $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
+                $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
+                $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
+            }
+
+        }elseif ($trans->service == 'openvpn'){
+            $account = Ovpn::where('user_id',$trans->user_id)->where('used',1)->first();
+            // it means that user updated his account. it's NOT a new account
+            if($account !== null){
+                $account->update(['expires_at'=> Carbon::parse($account->expires_at)->addMonths($trans->plan->month)]);
+            }else{
+
+                $account = Ovpn::where('plan_id',$trans->plan_id)->where('used',0)->first();
+                $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
+            }
+
         }
 
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();

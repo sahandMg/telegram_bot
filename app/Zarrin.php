@@ -6,6 +6,7 @@ use App\Accounts;
 use App\Jobs\sendNotif;
 use App\Transaction;
 use Carbon\Carbon;
+use Illuminate\Filesystem\Cache;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +60,7 @@ class Zarrin
                     $trans->username = $this->request['username'];
                     $trans->plan_id = $this->request['plan_id'];
                     $trans->user_id = $this->request['user_id'];
+                    $trans->service = Cache::get($this->request['user_id'].'_service')['value'];
                     if (isset($this->request['email'])) {
 
                         $trans->email = $this->request['email'];
@@ -117,7 +119,7 @@ class Zarrin
             }
         }
     }
-    protected function ZarrinPaymentConfirm($trans)
+    private function ZarrinPaymentConfirm($trans)
     {
         sendNotif::dispatch($trans);
 

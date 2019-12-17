@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Accounts;
 use App\Num2En;
+use App\Ovpn;
 use App\Plan;
 use App\Transaction;
 use App\Zarrin;
@@ -29,7 +30,7 @@ class TelegramCommandController extends Controller
     public function incoming(Request $request)
     {
         // $telegram = new Api('844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8');
-        $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما','شروع مجدد'];
+        $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما','شروع مجدد','cisco','openvpn'];
         $data = '';
         $text = '';
         $telegram =  $this->telegram;
@@ -54,14 +55,12 @@ class TelegramCommandController extends Controller
 
             $this->startBtn();
 
-            return 200;
-
         }
 
         /*
        * ========= ReSTART BTN CLICKED ===========
        */
-        if ($text == 'شروع مجدد'){
+        elseif ($text == 'شروع مجدد'){
 
             $this->restartBtn();
 
@@ -74,7 +73,7 @@ class TelegramCommandController extends Controller
         * ========= Transaction List BTN CLICKED ===========
         */
 
-        if($text == 'لیست تراکنش‌ها'){
+        elseif($text == 'لیست تراکنش‌ها'){
 
             $this->transactionList();
             return 200;
@@ -84,23 +83,21 @@ class TelegramCommandController extends Controller
        * ========= Contact  BTN CLICKED ===========
        */
 
-        if($text == 'تماس با ما'){
+        elseif($text == 'تماس با ما'){
 
             $this->contactUs();
-            return 200;
         }
 
 
         /*
          * ========= GLASSY BTN CLICKED ===========
          */
-        if (isset($tgResp['callback_query'])) {
+        elseif (isset($tgResp['callback_query'])) {
             $data = $tgResp['callback_query']['data'];
             $this->glassyBtn($data);
-            return 200;
         }
 //        if(strpos($text,'@') || (strlen($text) == 11 && is_numeric($text)) || Cache::get($chat_id) !== null){
-            if(Cache::get($chat_id) !== null){
+        if(Cache::get($chat_id) !== null){
                 if(!isset($tgResp['callback_query'])){
 
                     if(strpos($text,'@') || (strlen($text) == 11)){
@@ -202,48 +199,50 @@ class TelegramCommandController extends Controller
                 }
 
 
-            }elseif(!in_array($text,$dic) || !in_array($data,$dic)){
-
-                $options = [
-
-                    array($telegram->buildInlineKeyBoardButton('خرید حساب ۱ ماهه',"",'1')),
-                    array($telegram->buildInlineKeyBoardButton('خرید حساب ۳ ماهه اقتصادی','','3')),
-                    array($telegram->buildInlineKeyBoardButton('دریافت حساب رایگان تست','','0')),
-                    array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
-                    array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
-
-                ];
-                $msg = [
-                    'chat_id' => $chat_id,
-                    'text' => 'لطفا از موارد زیر انتخاب کنید',
-                    'parse_mode' => 'HTML',
-                    'reply_markup' => $telegram->buildInlineKeyboard($options)
-                ];
-                $telegram->sendMessage($msg);
             }
+
+//        elseif(!in_array($text,$dic) || !in_array($data,$dic)){
+//
+//                $options = [
+//
+//                    array($telegram->buildInlineKeyBoardButton('خرید حساب ۱ ماهه',"",'1')),
+//                    array($telegram->buildInlineKeyBoardButton('خرید حساب ۳ ماهه اقتصادی','','3')),
+//                    array($telegram->buildInlineKeyBoardButton('دریافت حساب رایگان تست','','0')),
+//                    array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
+//                    array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
+//
+//                ];
+//                $msg = [
+//                    'chat_id' => $chat_id,
+//                    'text' => 'لطفا از موارد زیر انتخاب کنید',
+//                    'parse_mode' => 'HTML',
+//                    'reply_markup' => $telegram->buildInlineKeyboard($options)
+//                ];
+//                $telegram->sendMessage($msg);
+//            }
 
 
     }
 
     private function startBtn(){
-
         $chat_id = $this->telegram->ChatID();
         $telegram =  $this->telegram;
         Cache::forget($chat_id);
 
         $options = [
-
-            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' خرید حساب ۱ ماهه '.Emoji::largeOrangeDiamond(),"",'1')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::largeBlueDiamond().' خرید حساب ۳ ماهه اقتصادی '.Emoji::largeBlueDiamond(),'','3')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
-            array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
-            array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
+            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
+//            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' خرید حساب ۱ ماهه '.Emoji::largeOrangeDiamond(),"",'1')),
+//            array($telegram->buildInlineKeyBoardButton(Emoji::largeBlueDiamond().' خرید حساب ۳ ماهه اقتصادی '.Emoji::largeBlueDiamond(),'','3')),
+//            array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
+//            array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
+//            array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
 
         ];
 
         $msg = [
             'chat_id' => $chat_id,
-            'text' => Emoji::smilingFaceWithSmilingEyes().'سلام. از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی طرح مورد نظر کلیک کنید ',
+            'text' => Emoji::smilingFaceWithSmilingEyes().'سلام '.' از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی طرح مورد نظر کلیک کنید ',
             'parse_mode' => 'HTML',
             'reply_markup' => $telegram->buildInlineKeyboard($options),
         ];
@@ -283,28 +282,10 @@ class TelegramCommandController extends Controller
         $chat_id = $this->telegram->ChatID();
         if($data == '1'){
             Cache::put("$chat_id",['id'=>$chat_id,'value'=>1],1000);
-            $plan = Plan::where('id',1)->first();
-            $price = $plan->price;
-            $time = $plan->month;
-            $msg_text = " انتخاب شما حساب $time ماهه با قیمت $price تومان می‌باشد. لطفا برای دریافت نام کاربری و کلمه عبور vpn، ایمیل و یا شماره موبایل  خود را ارسال کنید ";
-            $msg = [
-                'chat_id' => $chat_id,
-                'text' => $msg_text,
-                'parse_mode' => 'HTML',
-            ];
-            $telegram->sendMessage($msg);
+           $this->planRegistration(1,$telegram);
         }elseif($data == '3'){
             Cache::put("$chat_id",['id'=>$chat_id,'value'=>3],1000);
-            $plan = Plan::where('id',2)->first();
-            $price = $plan->price;
-            $time = $plan->month;
-            $msg_text = " انتخاب شما حساب $time ماهه با قیمت $price تومان می‌باشد. لطفا برای دریافت نام کاربری و کلمه عبور vpn، ایمیل و یا شماره موبایل  خود را ارسال کنید ";
-            $msg = [
-                'chat_id' => $chat_id,
-                'text' => $msg_text,
-                'parse_mode' => 'HTML',
-            ];
-            $telegram->sendMessage($msg);
+            $this->planRegistration(2,$telegram);
         }elseif($data == '0'){
             Cache::put("$chat_id",['id'=>$chat_id,'value'=>0],1000);
             $msg_text = 'حساب تست ۳ روز اعتبار خواهد داشت';
@@ -313,37 +294,74 @@ class TelegramCommandController extends Controller
                 'text' => $msg_text,
                 'parse_mode' => 'HTML',
             ];
-            $freeAccount = Accounts::where('user_id',$chat_id)->first();
-            if(is_null($freeAccount)){
+            $service = Cache::get($chat_id.'_service')['value'];
+            $freeAccount = null;
+            if($service == 'cisco'){
+                $freeAccount = Accounts::where('user_id',$chat_id)->first();
+                if(is_null($freeAccount)){
 
-                $account = Accounts::where('plan_id',3)->where('used',0)->first();
-                DB::beginTransaction();
-                $account->update(['used' => 1,'user_id' => $chat_id,'expires_at'=> Carbon::now()->addDays(3)]);
-                DB::commit();
-                $telegram->sendMessage($msg);
-                $msg_text = ' username: '.$account->username;
-                $msg = [
-                    'chat_id' => $chat_id,
-                    'text' => $msg_text,
-                    'parse_mode' => 'HTML',
-                ];
-                $telegram->sendMessage($msg);
-                $msg_text = 'password : '.$account->password;
-                $msg = [
-                    'chat_id' => $chat_id,
-                    'text' => $msg_text,
-                    'parse_mode' => 'HTML',
-                ];
-                $telegram->sendMessage($msg);
-            }else{
-                $msg_text = 'شما پیش‌ از این حساب رایگان را دریافت کرده‌اید';
-                $msg = [
-                    'chat_id' => $chat_id,
-                    'text' => $msg_text,
-                    'parse_mode' => 'HTML',
-                ];
-                $telegram->sendMessage($msg);
+                    $account = Accounts::where('plan_id',3)->where('used',0)->first();
+                    DB::beginTransaction();
+                    $account->update(['used' => 1,'user_id' => $chat_id,'expires_at'=> Carbon::now()->addDays(3)]);
+                    DB::commit();
+                    $telegram->sendMessage($msg);
+                    $msg_text = ' username: '.$account->username;
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => $msg_text,
+                        'parse_mode' => 'HTML',
+                    ];
+                    $telegram->sendMessage($msg);
+                    $msg_text = 'password : '.$account->password;
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => $msg_text,
+                        'parse_mode' => 'HTML',
+                    ];
+                    $telegram->sendMessage($msg);
+                }else{
+                    $msg_text = 'شما پیش‌ از این حساب رایگان را دریافت کرده‌اید';
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => $msg_text,
+                        'parse_mode' => 'HTML',
+                    ];
+                    $telegram->sendMessage($msg);
+                }
+            }elseif ($service == 'openvpn'){
+                $freeAccount = Ovpn::where('user_id',$chat_id)->first();
+                if(is_null($freeAccount)){
+
+                    $account = Ovpn::where('plan_id',3)->where('used',0)->first();
+                    DB::beginTransaction();
+                    $account->update(['used' => 1,'user_id' => $chat_id,'expires_at'=> Carbon::now()->addDays(3)]);
+                    DB::commit();
+                    $telegram->sendMessage($msg);
+                    $msg_text = ' username: '.$account->username;
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => $msg_text,
+                        'parse_mode' => 'HTML',
+                    ];
+                    $telegram->sendMessage($msg);
+                    $msg_text = 'password : '.$account->password;
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => $msg_text,
+                        'parse_mode' => 'HTML',
+                    ];
+                    $telegram->sendMessage($msg);
+                }else{
+                    $msg_text = 'شما پیش‌ از این حساب رایگان را دریافت کرده‌اید';
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => $msg_text,
+                        'parse_mode' => 'HTML',
+                    ];
+                    $telegram->sendMessage($msg);
+                }
             }
+
 
         }elseif($data == 'server_list'){
             $msg_text = 'Server 1 : fi.joyvpn.xyz';
@@ -369,6 +387,14 @@ class TelegramCommandController extends Controller
             return 200;
 
         }
+        elseif ($data == 'cisco'){
+            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'cisco'],1000);
+            $this->plans();
+        }
+        elseif ($data == 'openvpn'){
+            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'openvpn'],1000);
+            $this->plans();
+        }
         else{
             $msg_text = 'منظورت خرید حساب اقتصادی ۳ ماهه هستش ؟';
             $msg = [
@@ -379,7 +405,69 @@ class TelegramCommandController extends Controller
             $telegram->sendMessage($msg);
         }
     }
+    private function sendFile(){
+        $telegram = $this->telegram;
+        $name = 'pezhman.ovpn';
+        echo "
+<body onload=\"submitform()\">
+    <form  id=\"myForm\" action='https://api.telegram.org/bot844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8/sendDocument' method='post' enctype='multipart/form-data'>
+        <input type='file' name='document' value='http://vitamin-g.ir/clients/$name'>
+        <input type='text' name='chat_id' value='83525910'>
+        <button id='send' type='submit'>Send</button>
+    </form>
+    
+ <script type=\"text/javascript\" language=\"javascript\">
+     function submitform(){
+     document.getElementById('myForm').submit();
+     document.getElementById(\"send\").click();
+     }     
+ </script>
+ </body>
+   ";
+    }
+    private function planRegistration($id,$telegram){
+        $chat_id = $telegram->ChatID();
+        $plan = Plan::where('id',$id)->first();
+        $price = $plan->price;
+        $time = $plan->month;
+        $service = Cache::get($chat_id.'_service')['value'];
+        $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب شماره موبایل و یا ایمیل خود را وارد کنید.";
+        $msg = [
+            'chat_id' => $chat_id,
+            'text' => $msg_text,
+            'parse_mode' => 'HTML',
+        ];
+        $telegram->sendMessage($msg);
+    }
+    private function plans(){
 
+        $chat_id = $this->telegram->ChatID();
+        $telegram =  $this->telegram;
+        Cache::forget($chat_id);
+
+       $options = $this->planKeyboard();
+        $msg = [
+            'chat_id' => $chat_id,
+            'text' => Emoji::blueCircle().' '.strtoupper(Cache::get($chat_id.'_service')['value']).' '.Emoji::blueCircle() ,
+            'parse_mode' => 'HTML',
+            'reply_markup' => $telegram->buildInlineKeyboard($options),
+        ];
+        $telegram->sendMessage($msg);
+    }
+
+    private function planKeyboard(){
+        $telegram =  $this->telegram;
+        $options = [
+            array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz'))
+
+        ];
+        return $options;
+
+    }
     private function transactionList(){
 
         $telegram = $this->telegram;
