@@ -64,11 +64,13 @@ Route::post('hook',function (Request $request){
         $msg2 = $body[1];
         $msg3 = $body[2];
         $msg4 = $body[3];
+        $msg5 = $body[4];
         $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
         $telegram->sendMessage($msg);
         $telegram->sendMessage($msg2);
         $telegram->sendMessage($msg3);
         $telegram->sendMessage($msg4);
+        $telegram->sendMessage($msg5);
     }elseif($request->type == 'canceled'){
         $body = $request->all();
         $msg = $body[0];

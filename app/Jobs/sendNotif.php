@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Emoji\Emoji;
 
 class sendNotif implements ShouldQueue
 {
@@ -70,10 +71,10 @@ class sendNotif implements ShouldQueue
 
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();
         DB::commit();
-
+        $char = Emoji::sparkle();
         $msg = [
             'chat_id' => $trans->user_id,
-            'text' => 'با تشکر از خرید شما',
+            'text' => "$char $char با تشکر از پرداخت شما ",
             'parse_mode' => 'HTML',
         ];
         $msg2 = [
@@ -124,7 +125,7 @@ class sendNotif implements ShouldQueue
             $message->subject('رسید پرداخت');
         });
 
-        $data = array($msg,$msg2,$msg3,$msg4);
+        $data = array($msg,$msg2,$msg3,$msg4,$msg5);
         $jsonData = json_encode($data);
         $ch = curl_init('https://vitamin-g.ir/api/hook?type=success');
         curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');

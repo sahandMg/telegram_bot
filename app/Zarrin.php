@@ -6,7 +6,6 @@ use App\Accounts;
 use App\Jobs\sendNotif;
 use App\Transaction;
 use Carbon\Carbon;
-
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -14,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Morilog\Jalali\Jalalian;
+use Spatie\Emoji\Emoji;
 
 class Zarrin
 {
@@ -118,9 +118,10 @@ class Zarrin
                 DB::beginTransaction();
                 $trans->update(['status'=>'canceled']);
                 DB::commit();
+                $char = Emoji::redCircle();
                 $msg = [
                     'chat_id' => $trans->user_id,
-                    'text' => "$trans->trans_id پرداخت شما ناموفق بود. شماره تراکنش: ",
+                    'text' => " $char $char پرداخت شما ناموفق بود. شماره تراکنش : $trans->trans_id",
                     'parse_mode' => 'HTML',
                 ];
                 $data = array($msg);
