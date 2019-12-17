@@ -6,9 +6,10 @@ use App\Accounts;
 use App\Jobs\sendNotif;
 use App\Transaction;
 use Carbon\Carbon;
-use Illuminate\Filesystem\Cache;
+
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -114,6 +115,27 @@ class Zarrin
                 return redirect()->route('RemotePaymentSuccess',['transid'=>$trans->trans_id]);
 
             } else {
+                DB::beginTransaction();
+                $trans->update(['status'=>'canceled']);
+                DB::commit();
+                $msg = [
+                    'chat_id' => $trans->user_id,
+                    'text' => "$trans->trans_id پرداخت شما ناموفق بود. شماره تراکنش: ",
+                    'parse_mode' => 'HTML',
+                ];
+                $data = array($msg);
+                $jsonData = json_encode($data);
+                $ch = curl_init('https://vitamin-g.ir/api/hook?type=canceled');
+                curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Content-Length: ' . strlen($jsonData)
+                ));
+                curl_exec($ch);
+                curl_close($ch);
 
                 return redirect()->route('RemotePaymentCanceled', ['transid' => $trans->trans_id]);
             }

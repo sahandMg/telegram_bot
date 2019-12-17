@@ -91,6 +91,11 @@ class sendNotif implements ShouldQueue
             'text' => ' انقضا '.\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y'),
             'parse_mode' => 'HTML',
         ];
+        $msg5 = [
+            'chat_id' => $trans->user_id,
+            'text' => ' شماره تراکنش '.$trans->trans_id,
+            'parse_mode' => 'HTML',
+        ];
         if($trans->email != null){
 //
             Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
@@ -107,7 +112,8 @@ class sendNotif implements ShouldQueue
                 'خرید از JOY VPN'
                 . ' مبلغ ' . $trans->amount.' تومان '
                 .' نام کاربری '. $account->username
-                . ' کمه عبور '.$account->password;
+                . ' کمه عبور '.$account->password
+                . ' شماره تراکنش '.$trans->trans_id;
             $api->Send($sender,$receptor,$message);
 
         }
@@ -120,7 +126,7 @@ class sendNotif implements ShouldQueue
 
         $data = array($msg,$msg2,$msg3,$msg4);
         $jsonData = json_encode($data);
-        $ch = curl_init('https://vitamin-g.ir/api/hook');
+        $ch = curl_init('https://vitamin-g.ir/api/hook?type=success');
         curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);

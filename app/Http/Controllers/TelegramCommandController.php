@@ -97,7 +97,7 @@ class TelegramCommandController extends Controller
             $this->glassyBtn($data);
         }
 //        if(strpos($text,'@') || (strlen($text) == 11 && is_numeric($text)) || Cache::get($chat_id) !== null){
-        if(Cache::get($chat_id) !== null){
+        elseif(Cache::get($chat_id) !== null){
                 if(!isset($tgResp['callback_query'])){
 
                     if(strpos($text,'@') || (strlen($text) == 11)){
@@ -232,11 +232,6 @@ class TelegramCommandController extends Controller
         $options = [
             array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
             array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
-//            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' خرید حساب ۱ ماهه '.Emoji::largeOrangeDiamond(),"",'1')),
-//            array($telegram->buildInlineKeyBoardButton(Emoji::largeBlueDiamond().' خرید حساب ۳ ماهه اقتصادی '.Emoji::largeBlueDiamond(),'','3')),
-//            array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
-//            array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
-//            array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
 
         ];
 
@@ -257,12 +252,8 @@ class TelegramCommandController extends Controller
         Cache::forget($chat_id);
 
         $options = [
-
-            array($telegram->buildInlineKeyBoardButton('خرید حساب ۱ ماهه',"",'1')),
-            array($telegram->buildInlineKeyBoardButton('خرید حساب ۳ ماهه اقتصادی','','3')),
-            array($telegram->buildInlineKeyBoardButton('دریافت حساب رایگان تست','','0')),
-            array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
-            array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
+            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
+            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
 
         ];
 
@@ -431,7 +422,7 @@ class TelegramCommandController extends Controller
         $price = $plan->price;
         $time = $plan->month;
         $service = Cache::get($chat_id.'_service')['value'];
-        $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب شماره موبایل و یا ایمیل خود را وارد کنید.";
+        $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب شماره ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
         $msg = [
             'chat_id' => $chat_id,
             'text' => $msg_text,

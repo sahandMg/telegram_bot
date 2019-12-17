@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    protected $fillable = ['status'];
     public function plan(){
 
         return $this->belongsTo(Plan::class);
