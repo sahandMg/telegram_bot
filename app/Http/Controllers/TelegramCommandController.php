@@ -6,6 +6,7 @@ use App\Accounts;
 use App\Num2En;
 use App\Ovpn;
 use App\Plan;
+use App\Server;
 use App\Transaction;
 use App\Zarrin;
 use Carbon\Carbon;
@@ -231,13 +232,13 @@ class TelegramCommandController extends Controller
 
         $options = [
             array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
+//            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
 
         ];
 
         $msg = [
             'chat_id' => $chat_id,
-            'text' => Emoji::smilingFaceWithSmilingEyes().'سلام '.' از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی طرح مورد نظر کلیک کنید ',
+            'text' => ' از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی سرویس مورد نظر کلیک کنید ',
             'parse_mode' => 'HTML',
             'reply_markup' => $telegram->buildInlineKeyboard($options),
         ];
@@ -253,13 +254,13 @@ class TelegramCommandController extends Controller
 
         $options = [
             array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
+//            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
 
         ];
 
         $msg = [
             'chat_id' => $chat_id,
-            'text' => 'جهت خرید روی طرح مورد‌نظر کلیک کنید',
+            'text' => 'جهت خرید روی سرویس مورد‌نظر کلیک کنید',
             'parse_mode' => 'HTML',
             'reply_markup' => $telegram->buildInlineKeyboard($options),
         ];
@@ -288,7 +289,7 @@ class TelegramCommandController extends Controller
             $service = Cache::get($chat_id.'_service')['value'];
             $freeAccount = null;
             if($service == 'cisco'){
-                $freeAccount = Accounts::where('user_id',$chat_id)->first();
+                $freeAccount = Accounts::where('user_id',$chat_id)->where('plan_id',3)->first();
                 if(is_null($freeAccount)){
 
                     $account = Accounts::where('plan_id',3)->where('used',0)->first();
@@ -319,7 +320,8 @@ class TelegramCommandController extends Controller
                     ];
                     $telegram->sendMessage($msg);
                 }
-            }elseif ($service == 'openvpn'){
+            }
+            elseif ($service == 'openvpn'){
                 $freeAccount = Ovpn::where('user_id',$chat_id)->first();
                 if(is_null($freeAccount)){
 
@@ -353,22 +355,18 @@ class TelegramCommandController extends Controller
                 }
             }
 
-
         }elseif($data == 'server_list'){
-            $msg_text = 'Server 1 : fi.joyvpn.xyz';
-            $msg = [
-                'chat_id' => $chat_id,
-                'text' => $msg_text,
-                'parse_mode' => 'HTML',
-            ];
-            $telegram->sendMessage($msg);
-            $msg_text = 'Server 2 : uk.joyvpn.xyz';
-            $msg = [
-                'chat_id' => $chat_id,
-                'text' => $msg_text,
-                'parse_mode' => 'HTML',
-            ];
-            $telegram->sendMessage($msg);
+            $servers = Server::where('status','up')->get();
+            foreach ($servers as $server){
+                $msg_text = "Server 1 : $server->region";
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+            }
+
         /*
         * ========= REFUSE BTN CLICKED ===========
         */
@@ -422,7 +420,7 @@ class TelegramCommandController extends Controller
         $price = $plan->price;
         $time = $plan->month;
         $service = Cache::get($chat_id.'_service')['value'];
-        $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب شماره ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
+        $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب، آدرس ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
         $msg = [
             'chat_id' => $chat_id,
             'text' => $msg_text,
@@ -480,7 +478,7 @@ class TelegramCommandController extends Controller
         $chat_id = $this->telegram->ChatID();
         $options = [
 
-            array($telegram->buildInlineKeyBoardButton('تماس با ما',"https://t.me/Sahand_MG"),$telegram->buildInlineKeyBoardButton('لیست تراکنش‌ها',"",'transactions')),
+            array($telegram->buildInlineKeyBoardButton('تماس با ما',"https://t.me/JoyVpn_Support"),$telegram->buildInlineKeyBoardButton('لیست تراکنش‌ها',"",'transactions')),
             array($telegram->buildInlineKeyBoardButton('شروع مجدد'))
 
 
@@ -502,7 +500,7 @@ class TelegramCommandController extends Controller
         $chat_id = $this->telegram->ChatID();
         $msg = [
             'chat_id' => $chat_id,
-            'text' => 'https://t.me/Sahand_MG',
+            'text' => 'https://t.me/JoyVpn_Support',
             'parse_mode' => 'HTML',
         ];
 

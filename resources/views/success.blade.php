@@ -116,7 +116,7 @@
                 <p class="text-center"></p>
             </div>
             <div class="modal-footer">
-                <a href="https://t.me/Sahand_MG"><button class="btn btn-success btn-block" data-dismiss="modal">تماس با پشتیبانی</button></a>
+                <a href='https://t.me/JoyVpn_Support'><button class="btn btn-success btn-block">تماس با پشتیبانی</button></a>
             </div>
         </div>
     </div>

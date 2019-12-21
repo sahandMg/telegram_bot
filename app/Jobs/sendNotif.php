@@ -49,7 +49,7 @@ class sendNotif implements ShouldQueue
             $account = Accounts::where('user_id',$trans->user_id)->where('used',1)->first();
             // it means that user updated his account. it's NOT a new account
             if($account !== null){
-                $account->update(['expires_at'=> Carbon::parse($account->expires_at)->addMonths($trans->plan->month)]);
+                $account->update(['expires_at'=> Carbon::now()->addMonths($trans->plan->month)]);
             }else{
 
                 $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
@@ -60,7 +60,7 @@ class sendNotif implements ShouldQueue
             $account = Ovpn::where('user_id',$trans->user_id)->where('used',1)->first();
             // it means that user updated his account. it's NOT a new account
             if($account !== null){
-                $account->update(['expires_at'=> Carbon::parse($account->expires_at)->addMonths($trans->plan->month)]);
+                $account->update(['expires_at'=> Carbon::now()->addMonths($trans->plan->month)]);
             }else{
 
                 $account = Ovpn::where('plan_id',$trans->plan_id)->where('used',0)->first();
@@ -71,10 +71,10 @@ class sendNotif implements ShouldQueue
 
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();
         DB::commit();
-        $char = Emoji::sparkle();
+        $char = Emoji::heavyCheckMark();
         $msg = [
             'chat_id' => $trans->user_id,
-            'text' => "$char $char با تشکر از پرداخت شما ",
+            'text' => "$char  با تشکر از خرید شما $char",
             'parse_mode' => 'HTML',
         ];
         $msg2 = [

@@ -47,6 +47,7 @@ Route::get('run',function (){
 });
 Route::get('test',function (){
 
+    dd(Carbon::now());
     $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
     $msg = [
         'chat_id'=> '83525910',
