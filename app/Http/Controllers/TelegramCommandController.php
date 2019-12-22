@@ -202,26 +202,6 @@ class TelegramCommandController extends Controller
 
             }
 
-//        elseif(!in_array($text,$dic) || !in_array($data,$dic)){
-//
-//                $options = [
-//
-//                    array($telegram->buildInlineKeyBoardButton('خرید حساب ۱ ماهه',"",'1')),
-//                    array($telegram->buildInlineKeyBoardButton('خرید حساب ۳ ماهه اقتصادی','','3')),
-//                    array($telegram->buildInlineKeyBoardButton('دریافت حساب رایگان تست','','0')),
-//                    array($telegram->buildInlineKeyBoardButton('لیست سرورها','','server_list')),
-//                    array($telegram->buildInlineKeyBoardButton('آموزش اتصال و دانلود','http://joyvpn.xyz'))
-//
-//                ];
-//                $msg = [
-//                    'chat_id' => $chat_id,
-//                    'text' => 'لطفا از موارد زیر انتخاب کنید',
-//                    'parse_mode' => 'HTML',
-//                    'reply_markup' => $telegram->buildInlineKeyboard($options)
-//                ];
-//                $telegram->sendMessage($msg);
-//            }
-
 
     }
 
@@ -383,6 +363,8 @@ class TelegramCommandController extends Controller
         elseif ($data == 'openvpn'){
             Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'openvpn'],1000);
             $this->plans();
+        }elseif ($data == 'restart'){
+            $this->restartBtn();
         }
         else{
             $msg_text = 'منظورت خرید حساب اقتصادی ۳ ماهه هستش ؟';

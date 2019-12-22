@@ -71,7 +71,7 @@ Route::post('hook',function (Request $request){
         $telegram->sendMessage($msg3);
         $telegram->sendMessage($msg4);
         $telegram->sendMessage($msg5);
-        $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد'))];
+        $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
         $msg6 = [
             'chat_id' => $msg['chat_id'],
             'text' => 'جهت خرید مجدد، کلیک کنید',
@@ -85,7 +85,7 @@ Route::post('hook',function (Request $request){
         $msg = $body[0];
         $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
         $telegram->sendMessage($msg);
-        $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد'))];
+        $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
         $msg2 = [
             'chat_id' => $msg['chat_id'],
             'text' => 'جهت خرید مجدد، کلیک کنید',
@@ -94,5 +94,11 @@ Route::post('hook',function (Request $request){
         ];
         $telegram->sendMessage($msg2);
     }
+    elseif($request->type == 'warning'){
+        $body = $request->all();
+        $msg = $body[0];
+        $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+        $telegram->sendMessage($msg);
+}
 
 });
