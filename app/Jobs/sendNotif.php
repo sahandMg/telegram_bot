@@ -98,13 +98,6 @@ class sendNotif implements ShouldQueue
             'text' => ' شماره تراکنش '.$trans->trans_id,
             'parse_mode' => 'HTML',
         ];
-        $options = array($telegram->buildInlineKeyBoardButton('شروع مجدد'));
-        $msg6 = [
-            'chat_id' => $trans->user_id,
-            'text' => 'جهت خرید مجدد، کلیک کنید',
-            'parse_mode' => 'HTML',
-            'reply_markup' => $telegram->buildInlineKeyboard($options),
-        ];
 
         if($trans->email != null){
 //
@@ -134,7 +127,7 @@ class sendNotif implements ShouldQueue
             $message->subject('رسید پرداخت');
         });
 
-        $data = array($msg,$msg2,$msg3,$msg4,$msg5,$msg6);
+        $data = array($msg,$msg2,$msg3,$msg4,$msg5);
         $jsonData = json_encode($data);
         $ch = curl_init('https://vitamin-g.ir/api/hook?type=success');
         curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');

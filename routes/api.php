@@ -65,21 +65,33 @@ Route::post('hook',function (Request $request){
         $msg3 = $body[2];
         $msg4 = $body[3];
         $msg5 = $body[4];
-        $msg6 = $body[5];
         $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
         $telegram->sendMessage($msg);
         $telegram->sendMessage($msg2);
         $telegram->sendMessage($msg3);
         $telegram->sendMessage($msg4);
         $telegram->sendMessage($msg5);
+        $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد'))];
+        $msg6 = [
+            'chat_id' => $msg['chat_id'],
+            'text' => 'جهت خرید مجدد، کلیک کنید',
+            'parse_mode' => 'HTML',
+            'reply_markup' => $telegram->buildInlineKeyboard($options),
+        ];
         $telegram->sendMessage($msg6);
 
     }elseif($request->type == 'canceled'){
         $body = $request->all();
         $msg = $body[0];
-        $msg2 = $body[1];
         $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
         $telegram->sendMessage($msg);
+        $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد'))];
+        $msg2 = [
+            'chat_id' => $msg['chat_id'],
+            'text' => 'جهت خرید مجدد، کلیک کنید',
+            'parse_mode' => 'HTML',
+            'reply_markup' => $telegram->buildInlineKeyboard($options),
+        ];
         $telegram->sendMessage($msg2);
     }
 

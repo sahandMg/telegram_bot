@@ -124,15 +124,7 @@ class Zarrin
                     'text' => " $char $char پرداخت شما ناموفق بود. شماره تراکنش : $trans->trans_id",
                     'parse_mode' => 'HTML',
                 ];
-                $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
-                $options = array($telegram->buildInlineKeyBoardButton('شروع مجدد'));
-                $msg2 = [
-                    'chat_id' => $trans->user_id,
-                    'text' => 'جهت خرید مجدد، کلیک کنید',
-                    'parse_mode' => 'HTML',
-                    'reply_markup' => $telegram->buildInlineKeyboard($options),
-                ];
-                $data = array($msg,$msg2);
+                $data = array($msg);
                 $jsonData = json_encode($data);
                 $ch = curl_init('https://vitamin-g.ir/api/hook?type=canceled');
                 curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
