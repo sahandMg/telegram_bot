@@ -12,6 +12,7 @@
 */
 use App\Accounts;
 use App\Num2En;
+use App\Server;
 use App\Transaction;
 use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleClient;
@@ -47,22 +48,5 @@ Route::get('run',function (){
 });
 Route::get('test',function (){
 
-    dd(Carbon::now());
-    $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
-    $msg = [
-        'chat_id'=> '83525910',
-        'document'=> 'http://vitamin-g.ir/clients/pezhman.ovpn'
-    ];
-    $telegram->sendDocument($msg);
-    $trans = Transaction::find(24);
-    $lastAccount = Accounts::where('user_id',$trans->user_id)->where('used',1)->first();
-    dd(strlen('۱'));
-    dd(Carbon::now()->diffInDays(Carbon::now()->addDays(20)));
-    $lastAccount->delete();
-    // it means that user updated his account. it's NOT a new account
-    dd(Carbon::now()->diffInDays(Carbon::parse($lastAccount->updated_at)));
-    Emoji::CHARACTER_GRINNING_FACE;
-    echo  Emoji::largeOrangeDiamond();
-    echo  Emoji::smilingFaceWithSmilingEyes();
 
 });

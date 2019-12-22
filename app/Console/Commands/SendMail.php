@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
+use Spatie\Emoji\Emoji;
 
 class SendMail extends Command
 {
@@ -47,6 +48,7 @@ class SendMail extends Command
             's29.moghadam@gmail.com','s30.moghadam@gmail.com',
             's31.moghadam@gmail.com','s32.moghadam@gmail.com',
             's33.moghadam@gmail.com','newton.greens.ng@gmail.com'
+//            's23.moghadam@gmail.com'
         ];
 //    $mails = ['s23.moghadsadsadasad@gmail.com'];
         for($i=0;$i<50;$i++){
@@ -54,7 +56,7 @@ class SendMail extends Command
             Mail::send('welcome',[],function($message)use($mails,$i){
                 $message->to($mails[rand(0,15)]);
 //            $message->from('support@joyvpn.xyz');
-                $message->subject('!!دنیای بدون مرز!!');
+                $message->subject(Emoji::globeShowingAmericas().' !!دنیای بدون مرز!! '.Emoji::globeShowingAmericas());
             });
             sleep(0.5);
         }

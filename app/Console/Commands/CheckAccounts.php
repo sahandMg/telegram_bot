@@ -47,7 +47,7 @@ class CheckAccounts extends Command
         $freeAccounts = $accounts->where('plan_id',3);
         $monthly = $accounts->where('plan_id',1);
         $three_monthly = $accounts->where('plan_id',2);
-        $servers = Server::where('status','up');
+        $servers = Server::where('status','up')->get();
         foreach ($freeAccounts as $account){
 
             if(Carbon::now()->diffInDays(Carbon::parse($account->expires_at)) == 0 ){

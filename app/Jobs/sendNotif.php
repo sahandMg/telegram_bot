@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Accounts;
 use App\Ovpn;
+use App\Repo\Telegram;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -39,7 +40,7 @@ class sendNotif implements ShouldQueue
         $trans = $this->trans;
         $transactionId = $trans->trans_id;
         $orderID = $transactionId;
-
+        $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
         // update created transaction record
         DB::beginTransaction();
         DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
@@ -97,6 +98,14 @@ class sendNotif implements ShouldQueue
             'text' => ' شماره تراکنش '.$trans->trans_id,
             'parse_mode' => 'HTML',
         ];
+        $options = array($telegram->buildInlineKeyBoardButton('شروع مجدد'));
+        $msg6 = [
+            'chat_id' => $trans->user_id,
+            'text' => 'جهت خرید مجدد، کلیک کنید',
+            'parse_mode' => 'HTML',
+            'reply_markup' => $telegram->buildInlineKeyboard($options),
+        ];
+
         if($trans->email != null){
 //
             Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
@@ -125,7 +134,7 @@ class sendNotif implements ShouldQueue
             $message->subject('رسید پرداخت');
         });
 
-        $data = array($msg,$msg2,$msg3,$msg4,$msg5);
+        $data = array($msg,$msg2,$msg3,$msg4,$msg5,$msg6);
         $jsonData = json_encode($data);
         $ch = curl_init('https://vitamin-g.ir/api/hook?type=success');
         curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
