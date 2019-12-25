@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="7fe52e7d-1c0a-4fc5-95cf-2e50a0bd455c" name="telegram" url="http://193.176.241.212">
-        <fileTransfer host="193.176.241.212" port="22" rootFolder="/var/www/html/pay.joyvpn.xyz" accessType="SFTP">
+      <webServer id="7fe52e7d-1c0a-4fc5-95cf-2e50a0bd455c" name="telegram" url="http://194.32.79.86">
+        <fileTransfer host="194.32.79.86" port="22" rootFolder="/var/www/html/pay.joyvpn.xyz" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>

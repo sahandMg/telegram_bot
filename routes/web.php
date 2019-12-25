@@ -25,17 +25,11 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 Route::get('zarrin/callback', 'PaymentController@ZarrinCallback')->name('ZarrinCallback');
 Route::get('payment/success/{transid}',['as'=>'RemotePaymentSuccess','uses'=>'PaymentController@successPayment']);
 Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'PaymentController@FailedPayment']);
+Route::get('import',['as'=>'importAccount','uses'=>'AccountController@index']);
+Route::post('import',['as'=>'importAccount','uses'=>'AccountController@post_index']);
 
-Route::get('/',function (\Illuminate\Http\Request $request){
 
-   echo '
-    <form action="https://api.telegram.org/bot844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8/sendDocument" method="post" enctype="multipart/form-data">
-        <input type="file" name="document">
-        <button type="submit">Send</button>
-    </form>
-   ';
 
-});
 Route::post('getfile',function (\Illuminate\Http\Request $request){
 
     dd($request->all());
@@ -44,9 +38,17 @@ Route::post('getfile',function (\Illuminate\Http\Request $request){
 
 Route::get('run',function (){
 
-    echo shell_exec("./com.sh sahand");
+    phpinfo();
 });
 Route::get('test',function (){
 
+    $servers = Server::where('status', 'up')->get();
+    foreach ($servers as $server) {
+        $ch = curl_init($server->ip . ':9095?username=aliii'.'&password=123123');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Telegram Bot');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+    }
 
 });

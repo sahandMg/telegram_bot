@@ -58,8 +58,9 @@ class CheckAccounts extends Command
                     curl_setopt($ch, CURLOPT_USERAGENT, 'Telegram Bot');
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $result = curl_exec($ch);
                     $this->sendNotif($account);
-                    $account->delete();
+//                    $account->delete();
                 }
             }
 
@@ -73,8 +74,9 @@ class CheckAccounts extends Command
                     curl_setopt($ch, CURLOPT_USERAGENT, 'Telegram Bot');
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $result = curl_exec($ch);
                     $this->sendNotif($account);
-                    $account->delete();
+//                    $account->delete();
                 }
             }
 
@@ -89,8 +91,9 @@ class CheckAccounts extends Command
                     curl_setopt($ch, CURLOPT_USERAGENT, 'Telegram Bot');
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $result = curl_exec($ch);
                     $this->sendNotif($account);
-                    $account->delete();
+//                    $account->delete();
                 }
             }
 
@@ -122,6 +125,5 @@ class CheckAccounts extends Command
         curl_exec($ch);
         curl_close($ch);
 
-        $telegram->sendMessage($msg);
     }
 }

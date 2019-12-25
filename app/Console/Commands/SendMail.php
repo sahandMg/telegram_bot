@@ -54,7 +54,7 @@ class SendMail extends Command
         for($i=0;$i<50;$i++){
 //    return view('welcome');
             Mail::send('welcome',[],function($message)use($mails,$i){
-                $message->to($mails[rand(0,15)]);
+                $message->to($mails[rand(0,16)]);
 //            $message->from('support@joyvpn.xyz');
                 $message->subject(Emoji::globeShowingAmericas().' !!دنیای بدون مرز!! '.Emoji::globeShowingAmericas());
             });
