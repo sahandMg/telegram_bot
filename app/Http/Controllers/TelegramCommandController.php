@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Accounts;
+use App\Comment;
 use App\Num2En;
 use App\Ovpn;
 use App\Plan;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Repo\TelegramErrorLogger;
 use \Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Emoji\Emoji;
 use Telegram\Bot\Api;
 class TelegramCommandController extends Controller
@@ -31,7 +33,7 @@ class TelegramCommandController extends Controller
     public function incoming(Request $request)
     {
         // $telegram = new Api('844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8');
-        $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما','شروع مجدد','cisco','openvpn'];
+        $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما','شروع مجدد','cisco','openvpn','open','y','n'];
         $data = '';
         $text = '';
         $telegram =  $this->telegram;
@@ -41,7 +43,7 @@ class TelegramCommandController extends Controller
             $username = $tgResp['message']['from']['first_name'];
         }else{
             $userId = $tgResp['callback_query']['from']['id'];
-            $username = $tgResp['callback_query']['from']['username'];
+            $username = $tgResp['callback_query']['from']['first_name'];
         }
 
         // $isBot = $tgResp['message']['from']['is_bot'];
@@ -209,13 +211,7 @@ class TelegramCommandController extends Controller
         $chat_id = $this->telegram->ChatID();
         $telegram =  $this->telegram;
         Cache::forget($chat_id);
-
-        $options = [
-            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
-//            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
-
-        ];
-
+        $options = $this->mainKeyBoard();
         $msg = [
             'chat_id' => $chat_id,
             'text' => ' از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی سرویس مورد نظر کلیک کنید ',
@@ -231,13 +227,7 @@ class TelegramCommandController extends Controller
         $chat_id = $this->telegram->ChatID();
         $telegram =  $this->telegram;
         Cache::forget($chat_id);
-
-        $options = [
-            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
-//            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenVpn '.Emoji::largeOrangeDiamond(),"",'openvpn')),
-
-        ];
-
+       $options = $this->mainKeyBoard();
         $msg = [
             'chat_id' => $chat_id,
             'text' => 'جهت خرید روی سرویس مورد‌نظر کلیک کنید',
@@ -248,6 +238,14 @@ class TelegramCommandController extends Controller
         $telegram->sendMessage($msg);
     }
 
+    private function mainKeyBoard(){
+        $telegram =  $this->telegram;
+        $options = [
+            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس Cisco '.Emoji::largeOrangeDiamond(),"",'cisco')),
+//            array($telegram->buildInlineKeyBoardButton(Emoji::largeOrangeDiamond().' سرویس OpenIR '.Emoji::largeOrangeDiamond(),"",'open')),
+        ];
+        return $options;
+    }
     private function glassyBtn($data){
 
         $telegram =  $this->telegram;
@@ -291,6 +289,17 @@ class TelegramCommandController extends Controller
                         'parse_mode' => 'HTML',
                     ];
                     $telegram->sendMessage($msg);
+
+                    $option2 = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => 'جهت خرید مجدد، کلیک کنید',
+                        'parse_mode' => 'HTML',
+                        'reply_markup' => $telegram->buildInlineKeyboard($option2),
+                    ];
+                    $telegram->sendMessage($msg);
+
+                    $this->sendNotifToAdmin($telegram,$account);
                 }else{
                     $msg_text = 'شما پیش‌ از این حساب رایگان را دریافت کرده‌اید';
                     $msg = [
@@ -299,6 +308,15 @@ class TelegramCommandController extends Controller
                         'parse_mode' => 'HTML',
                     ];
                     $telegram->sendMessage($msg);
+                    $option2 = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => 'جهت خرید مجدد، کلیک کنید',
+                        'parse_mode' => 'HTML',
+                        'reply_markup' => $telegram->buildInlineKeyboard($option2),
+                    ];
+                    $telegram->sendMessage($msg);
+
                 }
             }
             elseif ($service == 'openvpn'){
@@ -324,6 +342,18 @@ class TelegramCommandController extends Controller
                         'parse_mode' => 'HTML',
                     ];
                     $telegram->sendMessage($msg);
+
+                    $option2 = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => 'جهت خرید مجدد، کلیک کنید',
+                        'parse_mode' => 'HTML',
+                        'reply_markup' => $telegram->buildInlineKeyboard($option2),
+                    ];
+                    $telegram->sendMessage($msg);
+
+
+                    $this->sendNotifToAdmin($telegram,$account);
                 }else{
                     $msg_text = 'شما پیش‌ از این حساب رایگان را دریافت کرده‌اید';
                     $msg = [
@@ -332,13 +362,22 @@ class TelegramCommandController extends Controller
                         'parse_mode' => 'HTML',
                     ];
                     $telegram->sendMessage($msg);
+                    $option2 = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
+                    $msg = [
+                        'chat_id' => $chat_id,
+                        'text' => 'جهت خرید مجدد، کلیک کنید',
+                        'parse_mode' => 'HTML',
+                        'reply_markup' => $telegram->buildInlineKeyboard($option2),
+                    ];
+                    $telegram->sendMessage($msg);
+
                 }
             }
 
         }elseif($data == 'server_list'){
             $servers = Server::where('status','up')->get();
-            foreach ($servers as $server){
-                $msg_text = "Server 1 : $server->region";
+            foreach ($servers as $index => $server){
+                $msg_text = "Server".($index+1).": ".$server->region;
                 $msg = [
                     'chat_id' => $chat_id,
                     'text' => $msg_text,
@@ -363,19 +402,93 @@ class TelegramCommandController extends Controller
         elseif ($data == 'openvpn'){
             Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'openvpn'],1000);
             $this->plans();
-        }elseif ($data == 'restart'){
+        }
+        elseif ($data == 'open'){
+            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'open'],1000);
+            $this->plans();
+        }
+        elseif ($data == 'restart'){
             $this->restartBtn();
         }
-        else{
-            $msg_text = 'منظورت خرید حساب اقتصادی ۳ ماهه هستش ؟';
-            $msg = [
-                'chat_id' => $chat_id,
-                'text' => $msg_text,
-                'parse_mode' => 'HTML',
-            ];
-            $telegram->sendMessage($msg);
+        elseif ($data == 'y'){
+
+            $comment = Comment::where('chat_id',$this->telegram->ChatID())->first();
+            if(is_null($comment)){
+
+                $comment = new Comment();
+                $comment->username = $this->telegram->FirstName();
+                $comment->user_id = $this->telegram->ChatID();
+                $comment->vote = 0;
+                $comment->save();
+                $msg_text = 'y';
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+            }else{
+                $comment->update(['vote'=> !$comment->vote]);
+                $msg_text = 'y2';
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+            }
+
+        }elseif ($data == 'n'){
+
+            $comment = Comment::where('chat_id',$this->telegram->ChatID())->first();
+            if(is_null($comment)){
+
+                $comment = new Comment();
+                $comment->username = $this->telegram->FirstName();
+                $comment->user_id = $this->telegram->ChatID();
+                $comment->vote = 0;
+                $comment->save();
+                $msg_text = 'y';
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+            }else{
+                $comment->update(['vote'=> !$comment->vote]);
+                $msg_text = 'y2';
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $msg_text,
+                    'parse_mode' => 'HTML',
+                ];
+                $telegram->sendMessage($msg);
+            }
+
         }
+//        else{
+//            $msg_text = 'منظورت خرید حساب اقتصادی ۳ ماهه هستش ؟';
+//            $msg = [
+//                'chat_id' => $chat_id,
+//                'text' => $msg_text,
+//                'parse_mode' => 'HTML',
+//            ];
+//            $telegram->sendMessage($msg);
+//        }
     }
+
+    private function sendNotifToAdmin($telegram,$account){
+
+
+        $msg = [
+            'chat_id' => 83525910,
+            'text' => ' خرید اکانت رایگان جدید '.$this->telegram->FirstName(),
+            'parse_mode' => 'HTML',
+        ];
+        $telegram->sendMessage($msg);
+    }
+
     private function sendFile(){
         $telegram = $this->telegram;
         $name = 'pezhman.ovpn';
@@ -428,14 +541,26 @@ class TelegramCommandController extends Controller
 
     private function planKeyboard(){
         $telegram =  $this->telegram;
-        $options = [
-            array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
-            array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz'))
+        $chat_id = $telegram->ChatID();
+        if(Cache::get($chat_id.'_service')['value'] == 'open'){
+            $options = [
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz'))
 
-        ];
+            ];
+        }else{
+            $options = [
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz'))
+
+            ];
+        }
+
         return $options;
 
     }

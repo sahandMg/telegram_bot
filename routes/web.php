@@ -16,6 +16,7 @@ use App\Server;
 use App\Transaction;
 use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleClient;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Emoji\Emoji;
 use Symfony\Component\Process\Process;
@@ -41,14 +42,44 @@ Route::get('run',function (){
     phpinfo();
 });
 Route::get('test',function (){
+    $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+    $trans = new Transaction();
+    $trans->trans_id = 'free';
+    $trans->user_id = 212121;
+    $trans->plan_id = 3;
+    $trans->amount = 0;
+    $trans->authority = 'JOYVPN_FREE_ACCOUNT';
+    $trans->username = 321312;
+    $trans->service = 'cisco';
+    $trans->status = 'paid';
+    $trans->save();
+    $plan = \App\Plan::find(3);
+    $account = Accounts::find(101);
+    dd($plan);
+    Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
+        $message->from('support@joyvpn.xyz','JOY VPN');
+        $message->to('sahand.mg.ne@gmail.com');
+        $message->subject('رسید پرداخت');
+    });
+});
 
-    $servers = Server::where('status', 'up')->get();
-    foreach ($servers as $server) {
-        $ch = curl_init($server->ip . ':9095?username=aliii'.'&password=123123');
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Telegram Bot');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_exec($ch);
-    }
+Route::get('comment',function (){
+
+    $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+//    Accounts::where('user_id',);
+
+    $chat_id = 83525910;
+    $options = [
+        array($telegram->buildInlineKeyboardButton(Emoji::okHandMediumLightSkinTone() .' خوبه تمدید می‌کنم '.Emoji::okHandMediumLightSkinTone(),'','y')),
+        array($telegram->buildInlineKeyboardButton(Emoji::angryFace() .' نه راضی نیستم '.Emoji::angryFace(),'','n'))
+    ];
+    $msg = [
+        'chat_id' => $chat_id,
+        'text' => Emoji::thinkingFace().' چقدر از خدمات ما راضی هستید؟ '.Emoji::thinkingFace(),
+        'parse_mode' => 'HTML',
+        'reply_markup' => $telegram->buildInlineKeyboard($options),
+    ];
+
+    $telegram->sendMessage($msg);
 
 });

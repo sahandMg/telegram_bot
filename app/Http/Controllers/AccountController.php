@@ -22,6 +22,6 @@ class AccountController extends Controller
         $request->file('accounts')->move(public_path('files'), $name);
         Excel::import(new AccountsImport(), public_path('files/' . $name));
         unlink(public_path('files/'.$name));
-
+        return '200';
     }
 }
