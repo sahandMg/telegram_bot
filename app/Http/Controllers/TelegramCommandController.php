@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Accounts;
+use App\CacheData;
 use App\Comment;
 use App\Num2En;
 use App\Ovpn;
@@ -25,15 +26,29 @@ class TelegramCommandController extends Controller
      * @param Request $request
      */
     public $telegram;
+    public $cache;
     public function __construct()
     {
+        DB::beginTransaction();
         $this->telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+        $this->cache = CacheData::where('user_id',$this->telegram->ChatID())->where('closed',0)->first();
+        if(is_null($this->cache)){
+            $cache = new CacheData();
+            $cache->username = $this->telegram->Username();
+            $cache->user_id = $this->telegram->ChatID();
+            $cache->user_id = $this->telegram->ChatID();
+            $cache->save();
+            $this->cache = $cache;
+        }
+        DB::commit();
     }
 
     public function incoming(Request $request)
     {
         // $telegram = new Api('844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8');
-        $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما','شروع مجدد','cisco','openvpn','open','y','n'];
+        $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما',
+            'شروع مجدد','cisco','openvpn','open','y','n','شروع','پشتیبانی'
+        ];
         $data = '';
         $text = '';
         $telegram =  $this->telegram;
@@ -100,7 +115,8 @@ class TelegramCommandController extends Controller
             $this->glassyBtn($data);
         }
 //        if(strpos($text,'@') || (strlen($text) == 11 && is_numeric($text)) || Cache::get($chat_id) !== null){
-        elseif(Cache::get($chat_id) !== null){
+        elseif($this->cache->closed == 0){
+//        elseif(Cache::get($chat_id) !== null){
                 if(!isset($tgResp['callback_query'])){
 
                     if(strpos($text,'@') || (strlen($text) == 11)){
@@ -114,11 +130,12 @@ class TelegramCommandController extends Controller
                         $telegram->sendMessage($msg);
                     }
                     if(isset($pass)) {
-                        $cached = Cache::get($chat_id);
+//                        $cached = Cache::get($chat_id);
+                        $cached = $this->cache;
 
-                        Cache::forget($chat_id);
+//                        Cache::forget($chat_id);
 
-                        if ($cached['value'] == 1) {
+                        if ($cached->plan_id == 1) {
 
                             $plan = Plan::where('id',1)->first();
                             $price = $plan->price;
@@ -160,7 +177,7 @@ class TelegramCommandController extends Controller
                                 return 200;
                             }
 
-                        } elseif ($cached['value'] == 3) {
+                        } elseif ($cached->plan_id == 2) {
                             $plan = Plan::where('id',2)->first();
                             $price = $plan->price;
                             if (strpos($text, '@')) {
@@ -210,8 +227,13 @@ class TelegramCommandController extends Controller
     private function startBtn(){
         $chat_id = $this->telegram->ChatID();
         $telegram =  $this->telegram;
-        Cache::forget($chat_id);
         $options = $this->mainKeyBoard();
+        $but = [
+            array($telegram->buildInlineKeyboardButton('شروع','','/start')),
+            array($telegram->buildInlineKeyboardButton('لیست سرورها','','server_list')),
+            array($telegram->buildInlineKeyboardButton('تعرفه‌ها','','pricing')),
+            array($telegram->buildInlineKeyboardButton('پشتیبانی','https://t.me/joyVpn_Support')),
+        ];
         $msg = [
             'chat_id' => $chat_id,
             'text' => ' از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی سرویس مورد نظر کلیک کنید ',
@@ -220,13 +242,13 @@ class TelegramCommandController extends Controller
         ];
 
         $telegram->sendMessage($msg);
+
     }
 
     private function restartBtn(){
 
         $chat_id = $this->telegram->ChatID();
         $telegram =  $this->telegram;
-        Cache::forget($chat_id);
        $options = $this->mainKeyBoard();
         $msg = [
             'chat_id' => $chat_id,
@@ -250,30 +272,35 @@ class TelegramCommandController extends Controller
 
         $telegram =  $this->telegram;
         $chat_id = $this->telegram->ChatID();
+        DB::beginTransaction();
         if($data == '1'){
-            Cache::put("$chat_id",['id'=>$chat_id,'value'=>1],1000);
+//            Cache::put("$chat_id",['id'=>$chat_id,'value'=>1],1000);
+            $this->cache->update(['plan_id'=> 1]);
            $this->planRegistration(1,$telegram);
         }elseif($data == '3'){
-            Cache::put("$chat_id",['id'=>$chat_id,'value'=>3],1000);
+//            Cache::put("$chat_id",['id'=>$chat_id,'value'=>3],1000);
+            $this->cache->update(['plan_id'=> 2]);
             $this->planRegistration(2,$telegram);
         }elseif($data == '0'){
-            Cache::put("$chat_id",['id'=>$chat_id,'value'=>0],1000);
+//            Cache::put("$chat_id",['id'=>$chat_id,'value'=>0],1000);
+            $this->cache->update(['plan_id'=> 3]);
             $msg_text = 'حساب تست ۳ روز اعتبار خواهد داشت';
             $msg = [
                 'chat_id' => $chat_id,
                 'text' => $msg_text,
                 'parse_mode' => 'HTML',
             ];
-            $service = Cache::get($chat_id.'_service')['value'];
+//            $service = Cache::get($chat_id.'_service')['value'];
+            $service = $this->cache->service;
             $freeAccount = null;
             if($service == 'cisco'){
                 $freeAccount = Accounts::where('user_id',$chat_id)->where('plan_id',3)->first();
                 if(is_null($freeAccount)){
 
                     $account = Accounts::where('plan_id',3)->where('used',0)->first();
-                    DB::beginTransaction();
+//                    DB::beginTransaction();
                     $account->update(['used' => 1,'user_id' => $chat_id,'expires_at'=> Carbon::now()->addDays(3)]);
-                    DB::commit();
+//                    DB::commit();
                     $telegram->sendMessage($msg);
                     $msg_text = ' username: '.$account->username;
                     $msg = [
@@ -324,9 +351,9 @@ class TelegramCommandController extends Controller
                 if(is_null($freeAccount)){
 
                     $account = Ovpn::where('plan_id',3)->where('used',0)->first();
-                    DB::beginTransaction();
+//                    DB::beginTransaction();
                     $account->update(['used' => 1,'user_id' => $chat_id,'expires_at'=> Carbon::now()->addDays(3)]);
-                    DB::commit();
+//                    DB::commit();
                     $telegram->sendMessage($msg);
                     $msg_text = ' username: '.$account->username;
                     $msg = [
@@ -396,31 +423,33 @@ class TelegramCommandController extends Controller
 
         }
         elseif ($data == 'cisco'){
-            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'cisco'],1000);
+//            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'cisco'],1000);
+            $this->cache->update(['service'=>'cisco']);
             $this->plans();
         }
         elseif ($data == 'openvpn'){
-            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'openvpn'],1000);
+//            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'openvpn'],1000);
+            $this->cache->update(['service'=>'openvpn']);
             $this->plans();
         }
         elseif ($data == 'open'){
-            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'open'],1000);
+//            Cache::put($chat_id.'_service',['id'=>$chat_id,'value'=>'open'],1000);
+            $this->cache->update(['service'=>'open']);
             $this->plans();
         }
         elseif ($data == 'restart'){
             $this->restartBtn();
         }
         elseif ($data == 'y'){
-
-            $comment = Comment::where('chat_id',$this->telegram->ChatID())->first();
+//            DB::beginTransaction();
+            $comment = Comment::where('user_id',$this->telegram->ChatID())->first();
             if(is_null($comment)){
-
                 $comment = new Comment();
                 $comment->username = $this->telegram->FirstName();
                 $comment->user_id = $this->telegram->ChatID();
-                $comment->vote = 0;
+                $comment->vote = 1;
                 $comment->save();
-                $msg_text = 'y';
+                $msg_text = 'باتشکر. نظر شما ثبت شد';
                 $msg = [
                     'chat_id' => $chat_id,
                     'text' => $msg_text,
@@ -428,8 +457,8 @@ class TelegramCommandController extends Controller
                 ];
                 $telegram->sendMessage($msg);
             }else{
-                $comment->update(['vote'=> !$comment->vote]);
-                $msg_text = 'y2';
+                $comment->update(['vote'=> 1]);
+                $msg_text = ' نظر شما به روز شد';
                 $msg = [
                     'chat_id' => $chat_id,
                     'text' => $msg_text,
@@ -437,18 +466,18 @@ class TelegramCommandController extends Controller
                 ];
                 $telegram->sendMessage($msg);
             }
+//            DB::commit();
 
         }elseif ($data == 'n'){
-
-            $comment = Comment::where('chat_id',$this->telegram->ChatID())->first();
+//            DB::beginTransaction();
+            $comment = Comment::where('user_id',$this->telegram->ChatID())->first();
             if(is_null($comment)){
-
                 $comment = new Comment();
                 $comment->username = $this->telegram->FirstName();
                 $comment->user_id = $this->telegram->ChatID();
                 $comment->vote = 0;
                 $comment->save();
-                $msg_text = 'y';
+                $msg_text = 'باتشکر. نظر شما ثبت شد';
                 $msg = [
                     'chat_id' => $chat_id,
                     'text' => $msg_text,
@@ -456,8 +485,8 @@ class TelegramCommandController extends Controller
                 ];
                 $telegram->sendMessage($msg);
             }else{
-                $comment->update(['vote'=> !$comment->vote]);
-                $msg_text = 'y2';
+                $comment->update(['vote'=> 0]);
+                $msg_text = ' نظر شما به روز شد';
                 $msg = [
                     'chat_id' => $chat_id,
                     'text' => $msg_text,
@@ -465,8 +494,10 @@ class TelegramCommandController extends Controller
                 ];
                 $telegram->sendMessage($msg);
             }
+//            DB::commit();
 
         }
+        DB::commit();
 //        else{
 //            $msg_text = 'منظورت خرید حساب اقتصادی ۳ ماهه هستش ؟';
 //            $msg = [
@@ -514,7 +545,8 @@ class TelegramCommandController extends Controller
         $plan = Plan::where('id',$id)->first();
         $price = $plan->price;
         $time = $plan->month;
-        $service = Cache::get($chat_id.'_service')['value'];
+//        $service = Cache::get($chat_id.'_service')['value'];
+        $service = $this->cache->service;
         $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب، آدرس ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
         $msg = [
             'chat_id' => $chat_id,
@@ -527,12 +559,12 @@ class TelegramCommandController extends Controller
 
         $chat_id = $this->telegram->ChatID();
         $telegram =  $this->telegram;
-        Cache::forget($chat_id);
-
-       $options = $this->planKeyboard();
+//        Cache::forget($chat_id);
+        $service = $this->cache->service;
+        $options = $this->planKeyboard();
         $msg = [
             'chat_id' => $chat_id,
-            'text' => Emoji::blueCircle().' '.strtoupper(Cache::get($chat_id.'_service')['value']).' '.Emoji::blueCircle() ,
+            'text' => Emoji::blueCircle().' '.strtoupper($service).' '.Emoji::blueCircle() ,
             'parse_mode' => 'HTML',
             'reply_markup' => $telegram->buildInlineKeyboard($options),
         ];
@@ -542,7 +574,8 @@ class TelegramCommandController extends Controller
     private function planKeyboard(){
         $telegram =  $this->telegram;
         $chat_id = $telegram->ChatID();
-        if(Cache::get($chat_id.'_service')['value'] == 'open'){
+        $service = $this->cache->service;
+        if($service == 'open'){
             $options = [
                 array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
@@ -568,9 +601,7 @@ class TelegramCommandController extends Controller
 
         $telegram = $this->telegram;
         $chat_id = $this->telegram->ChatID();
-        Cache::forget($chat_id);
-
-
+//        Cache::forget($chat_id);
         $msg = [
             'chat_id' => $chat_id,
             'text' => 'این آیتم در حال راه‌اندازی می‌باشد',
@@ -581,6 +612,7 @@ class TelegramCommandController extends Controller
     }
 
     private function refuseBtn(){
+        DB::beginTransaction();
         $telegram = $this->telegram;
         $chat_id = $this->telegram->ChatID();
         $options = [
@@ -590,7 +622,8 @@ class TelegramCommandController extends Controller
 
 
         ];
-        Cache::forget($chat_id);
+//        Cache::forget($chat_id);
+        $this->cache->update(['closed'=>1]);
         $msg = [
             'chat_id' => $chat_id,
             'text' => 'درخواست شما لغو شد',
@@ -599,6 +632,7 @@ class TelegramCommandController extends Controller
         ];
 
         $telegram->sendMessage($msg);
+        DB::commit();
     }
 
     private function contactUs(){

@@ -75,7 +75,7 @@ Route::get('comment',function (){
     ];
     $msg = [
         'chat_id' => $chat_id,
-        'text' => Emoji::thinkingFace().' چقدر از خدمات ما راضی هستید؟ '.Emoji::thinkingFace(),
+        'text' => Emoji::thinkingFace().' از خدمات ما راضی هستید؟ '.Emoji::thinkingFace(),
         'parse_mode' => 'HTML',
         'reply_markup' => $telegram->buildInlineKeyboard($options),
     ];

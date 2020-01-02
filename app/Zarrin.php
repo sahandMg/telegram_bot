@@ -53,6 +53,7 @@ class Zarrin
             if ($result["Status"] == '100' ) {
 
                 DB::beginTransaction();
+                $cache = CacheData::where('user_id',$this->request['user_id'])->where('closed',0)->first();
                     $trans = new Transaction();
                     $trans->trans_id = 'Zarrin_' . strtoupper(uniqid());
                     $trans->status = 'unpaid';
@@ -61,7 +62,8 @@ class Zarrin
                     $trans->username = $this->request['username'];
                     $trans->plan_id = $this->request['plan_id'];
                     $trans->user_id = $this->request['user_id'];
-                    $trans->service = Cache::get($this->request['user_id'].'_service')['value'];
+//                    $trans->service = Cache::get($this->request['user_id'].'_service')['value'];
+                    $trans->service = $cache->service;
                     if (isset($this->request['email'])) {
 
                         $trans->email = $this->request['email'];
@@ -108,6 +110,9 @@ class Zarrin
         if ($err) {
             return "cURL Error #:" . $err;
         } else {
+            DB::beginTransaction();
+            CacheData::where('user_id',$trans->user_id)->where('closed',0)->first()->update(['closed'=>1]);
+            DB::commit();
             if ($result['Status'] == '100') {
 
                 $this->ZarrinPaymentConfirm($trans);
