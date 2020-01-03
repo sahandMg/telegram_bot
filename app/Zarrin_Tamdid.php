@@ -29,11 +29,9 @@ class Zarrin_Tamdid
 
 
         $amount = $this->request['amount'];
-        if(isset($this->request['tamdid'])){
-            $callback = 'http://pay.joyvpn.xyz/zarrin/callback/tamdid';
-        }else{
-            $callback = 'http://pay.joyvpn.xyz/zarrin/callback';
-        }
+
+        $callback = 'http://pay.joyvpn.xyz/zarrin/callback/tamdid';
+
         $data = array('MerchantID' => env('ZARRIN_TOKEN'),
             'Amount' => $amount,
             'CallbackURL' => $callback,
