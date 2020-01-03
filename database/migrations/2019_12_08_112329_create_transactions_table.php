@@ -25,6 +25,7 @@ class CreateTransactionsTable extends Migration
             $table->string('username');
             $table->string('service');
             $table->string('status')->default('unpaid');
+            $table->unsignedInteger('account_id')->nullable();
             $table->timestamps();
         });
     }

@@ -24,6 +24,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 
 Route::get('zarrin/callback', 'PaymentController@ZarrinCallback')->name('ZarrinCallback');
+Route::get('zarrin/callback/tamdid', 'PaymentController@ZarrinCallbackTamdid')->name('ZarrinCallbackTamdid');
 Route::get('payment/success/{transid}',['as'=>'RemotePaymentSuccess','uses'=>'PaymentController@successPayment']);
 Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'PaymentController@FailedPayment']);
 Route::get('import',['as'=>'importAccount','uses'=>'AccountController@index']);
@@ -42,26 +43,12 @@ Route::get('run',function (){
     phpinfo();
 });
 Route::get('test',function (){
-    $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
-    $trans = new Transaction();
-    $trans->trans_id = 'free';
-    $trans->user_id = 212121;
-    $trans->plan_id = 3;
-    $trans->amount = 0;
-    $trans->authority = 'JOYVPN_FREE_ACCOUNT';
-    $trans->username = 321312;
-    $trans->service = 'cisco';
-    $trans->status = 'paid';
-    $trans->save();
-    $plan = \App\Plan::find(3);
-    $account = Accounts::find(101);
-    dd($plan);
-    Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
-        $message->from('support@joyvpn.xyz','JOY VPN');
-        $message->to('sahand.mg.ne@gmail.com');
-        $message->subject('رسید پرداخت');
-    });
+
+
+//    return view('reminder');
+
 });
+
 
 Route::get('comment',function (){
 
@@ -83,3 +70,31 @@ Route::get('comment',function (){
     $telegram->sendMessage($msg);
 
 });
+
+Route::get('faq',function (){
+
+    if(!isset($_GET['id'])){
+        return 'enter chat id';
+    }else{
+        $id = $_GET['id'];
+    }
+    $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+//    Accounts::where('user_id',);
+
+    $chat_id = $id;
+    $options = [
+        array($telegram->buildInlineKeyboardButton(' پشتیبانی ','https://t.me/JoyVpn_Support')),
+    ];
+    $msg = [
+        'chat_id' => $chat_id,
+        'text' => Emoji::loudspeaker().Emoji::loudspeaker().' درصورت وجود هرگونه مشکل و یا سوال با پشتیبانی در ارتباط باشید ',
+        'parse_mode' => 'HTML',
+        'reply_markup' => $telegram->buildInlineKeyboard($options),
+    ];
+
+    $telegram->sendMessage($msg);
+});
+
+Route::get('tamdid','PaymentController@tamdid')->name('tamdid');
+Route::post('adv','MailController@sendMail')->name('adv');
+Route::get('adv','MailController@get_sendMail')->name('adv');

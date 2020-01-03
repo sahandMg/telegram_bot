@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 use Morilog\Jalali\Jalalian;
 use Spatie\Emoji\Emoji;
 
-class Zarrin
+class Zarrin_Tamdid
 {
 
     public $request;
@@ -58,7 +58,6 @@ class Zarrin
             if ($result["Status"] == '100' ) {
 
                 DB::beginTransaction();
-                $cache = CacheData::where('user_id',$this->request['user_id'])->where('closed',0)->first();
                     $trans = new Transaction();
                     $trans->trans_id = 'Zarrin_' . strtoupper(uniqid());
                     $trans->status = 'unpaid';
@@ -67,8 +66,9 @@ class Zarrin
                     $trans->username = $this->request['username'];
                     $trans->plan_id = $this->request['plan_id'];
                     $trans->user_id = $this->request['user_id'];
+                    $trans->account_id = $this->request['usr'];
 //                    $trans->service = Cache::get($this->request['user_id'].'_service')['value'];
-                    $trans->service = $cache->service;
+                    $trans->service = $this->request['service'];
                     if (isset($this->request['email'])) {
 
                         $trans->email = $this->request['email'];
@@ -115,9 +115,7 @@ class Zarrin
         if ($err) {
             return "cURL Error #:" . $err;
         } else {
-            DB::beginTransaction();
-            CacheData::where('user_id',$trans->user_id)->where('closed',0)->first()->update(['closed'=>1]);
-            DB::commit();
+
             if ($result['Status'] == '100') {
 
                 $this->ZarrinPaymentConfirm($trans);
@@ -176,15 +174,14 @@ class Zarrin
         //     }
 
         // }
-        DB::beginTransaction();
-        DB::connection('mysql')->table('transactions')->where('trans_id', $trans->trans_id)->update([
-            'status' => 'paid'
+       DB::connection('mysql')->table('transactions')->where('trans_id', $trans->trans_id)->update([
+        'status' => 'paid'
         ]);
-        $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
-        $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
-        $trans->update(['account_id'=>$account->id]);
+        DB::beginTransaction();
+        $account = $trans->account;
+        $account->update(['expires_at'=>Carbon::now()->addMonth(1)]);
         DB::commit();
-        sendNotif::dispatch($trans,$account);
+        sendNotif::dispatch($trans);
 
     }
 

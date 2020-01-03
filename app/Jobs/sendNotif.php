@@ -25,9 +25,11 @@ class sendNotif implements ShouldQueue
      * @return void
      */
     public $trans;
-    public function __construct($trans)
+    public $account;
+    public function __construct($trans,$account)
     {
         $this->trans = $trans;
+        $this->account = $account;
     }
 
     /**
@@ -42,36 +44,8 @@ class sendNotif implements ShouldQueue
         $orderID = $transactionId;
         $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
         // update created transaction record
-        DB::beginTransaction();
-        DB::connection('mysql')->table('transactions')->where('trans_id', $orderID)->update([
-            'status' => 'paid'
-        ]);
-        // if($trans->service == 'cisco'){
-        //     $account = Accounts::where('user_id',$trans->user_id)->where('plan_id','!=',3)->where('used',1)->first();
-        //     // it means that user updated his account. it's NOT a new account
-        //     if($account !== null){
-        //         $account->update(['expires_at'=> Carbon::now()->addMonths($trans->plan->month)]);
-        //     }else{
-
-                $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
-                $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
-            // }
-
-        // }elseif ($trans->service == 'openvpn'){
-        //     $account = Ovpn::where('user_id',$trans->user_id)->where('used',1)->first();
-        //     // it means that user updated his account. it's NOT a new account
-        //     if($account !== null){
-        //         $account->update(['expires_at'=> Carbon::now()->addMonths($trans->plan->month)]);
-        //     }else{
-
-        //         $account = Ovpn::where('plan_id',$trans->plan_id)->where('used',0)->first();
-        //         $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
-        //     }
-
-        // }
-
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();
-        DB::commit();
+
         $char = Emoji::heavyCheckMark();
         $msg = [
             'chat_id' => $trans->user_id,
@@ -80,12 +54,12 @@ class sendNotif implements ShouldQueue
         ];
         $msg2 = [
             'chat_id' => $trans->user_id,
-            'text' => ' نام کاربری '.$account->username,
+            'text' => ' نام کاربری '.$this->account->username,
             'parse_mode' => 'HTML',
         ];
         $msg3 = [
             'chat_id' => $trans->user_id,
-            'text' => ' کلمه عبور '.$account->password,
+            'text' => ' کلمه عبور '.$this->account->password,
             'parse_mode' => 'HTML',
         ];
         $msg4 = [
@@ -101,7 +75,7 @@ class sendNotif implements ShouldQueue
 
         if($trans->email != null){
 //
-            Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
+            Mail::send('invoice', ['account' => $this->account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
                 $message->from('support@joyvpn.xyz','JOY VPN');
                 $message->to($trans->email);
                 $message->subject('رسید پرداخت');
@@ -114,14 +88,14 @@ class sendNotif implements ShouldQueue
             $message =
                 'خرید از JOY VPN'
                 . ' مبلغ ' . $trans->amount.' تومان '
-                .' نام کاربری '. $account->username
-                . ' کمه عبور '.$account->password
+                .' نام کاربری '. $this->account->username
+                . ' کمه عبور '.$this->account->password
                 . ' شماره تراکنش '.$trans->trans_id;
             $api->Send($sender,$receptor,$message);
 
         }
 
-        Mail::send('invoice', ['account' => $account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
+        Mail::send('invoice', ['account' => $this->account, 'trans' => $trans,'plan'=>$plan], function ($message) use($trans) {
             $message->from('support@joyvpn.xyz','JOY VPN');
             $message->to('sahand.mg.ne@gmail.com');
             $message->subject('رسید پرداخت');

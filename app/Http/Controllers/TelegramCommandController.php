@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Repo\TelegramErrorLogger;
 use \Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Emoji\Emoji;
 use Telegram\Bot\Api;
@@ -34,7 +35,7 @@ class TelegramCommandController extends Controller
         $this->cache = CacheData::where('user_id',$this->telegram->ChatID())->where('closed',0)->first();
         if(is_null($this->cache)){
             $cache = new CacheData();
-            $cache->username = $this->telegram->Username();
+            $cache->username = $this->telegram->FirstName();
             $cache->user_id = $this->telegram->ChatID();
             $cache->user_id = $this->telegram->ChatID();
             $cache->save();
@@ -115,7 +116,7 @@ class TelegramCommandController extends Controller
             $this->glassyBtn($data);
         }
 //        if(strpos($text,'@') || (strlen($text) == 11 && is_numeric($text)) || Cache::get($chat_id) !== null){
-        elseif($this->cache->closed == 0){
+        elseif($this->cache->closed == 0 && !is_null($this->cache->service)){
 //        elseif(Cache::get($chat_id) !== null){
                 if(!isset($tgResp['callback_query'])){
 
@@ -284,6 +285,7 @@ class TelegramCommandController extends Controller
         }elseif($data == '0'){
 //            Cache::put("$chat_id",['id'=>$chat_id,'value'=>0],1000);
             $this->cache->update(['plan_id'=> 3]);
+            $this->cache->update(['closed'=>1]);
             $msg_text = 'حساب تست ۳ روز اعتبار خواهد داشت';
             $msg = [
                 'chat_id' => $chat_id,
@@ -580,7 +582,8 @@ class TelegramCommandController extends Controller
                 array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
-                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz'))
+                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::headphone().' پشتیبانی '.Emoji::headphone(),'https://t.me/JoyVpn_Support'))
 
             ];
         }else{
@@ -589,7 +592,8 @@ class TelegramCommandController extends Controller
                 array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
-                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz'))
+                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::headphone().' پشتیبانی '.Emoji::headphone(),'https://t.me/JoyVpn_Support'))
 
             ];
         }
@@ -613,6 +617,8 @@ class TelegramCommandController extends Controller
 
     private function refuseBtn(){
         DB::beginTransaction();
+        CacheData::where('user_id',$this->telegram->ChatID())->where('closed',0)->first()->update(['closed'=>1]);
+        DB::commit();
         $telegram = $this->telegram;
         $chat_id = $this->telegram->ChatID();
         $options = [
@@ -623,7 +629,7 @@ class TelegramCommandController extends Controller
 
         ];
 //        Cache::forget($chat_id);
-        $this->cache->update(['closed'=>1]);
+
         $msg = [
             'chat_id' => $chat_id,
             'text' => 'درخواست شما لغو شد',
@@ -632,7 +638,7 @@ class TelegramCommandController extends Controller
         ];
 
         $telegram->sendMessage($msg);
-        DB::commit();
+
     }
 
     private function contactUs(){

@@ -24,4 +24,6 @@ class AccountController extends Controller
         unlink(public_path('files/'.$name));
         return '200';
     }
+
+
 }
