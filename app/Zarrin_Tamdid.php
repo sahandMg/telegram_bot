@@ -177,7 +177,7 @@ class Zarrin_Tamdid
         ]);
         DB::beginTransaction();
         $account = $trans->account;
-        $account->update(['expires_at'=>Carbon::now()->addMonth(1)]);
+        $account->update(['expires_at'=>Carbon::now()->$account->plan->month]);
         DB::commit();
         sendNotif::dispatch($trans);
 
