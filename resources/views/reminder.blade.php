@@ -94,7 +94,8 @@
                                 <p dir="rtl" style="text-align: right; padding-right: 30px;"><span style="font-size: 11pt;"><strong><span style="font-family: Arial, palatino, serif;">حساب {{$plan->month}} ماهه {{$trans->service}} به قیمت {{$plan->price}} تومان.</span></strong></span></p>
                                 <p dir="rtl" style="text-align: right; padding-right: 30px;"><span style="font-size: 11pt;"><strong><span style="font-family: Arial, palatino, serif;">نام کاربری : {{$account->username}}</span></strong></span></p>
                                 <p dir="rtl" style="text-align: right; padding-right: 30px;"><span style="font-size: 11pt;"><strong><span style="font-family: Arial, palatino, serif;">کلمه عبور: {{$account->password}}</span></strong></span></p>
-                                <p dir="rtl" style="text-align: right; padding-right: 30px;"><span style="font-size: 11pt;"><strong><span style="font-family: Arial, palatino, serif;">تاریخ خرید - انقضا : {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($trans->updated_at))->format('%d %B %Y')}} - {{$account->expires_at}}</span></strong></span></p>
+                                <p dir="rtl" style="text-align: right; padding-right: 30px;"><span style="font-size: 11pt;"><strong><span style="font-family: Arial, palatino, serif;">تاریخ خرید - انقضا : {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($trans->updated_at))->format('%d %B %Y')}}
+                                                - {{$account->expires_at}}</span></strong></span></p>
                                 <p dir="rtl" style="text-align: right; padding-right: 30px;"><span style="font-size: 11pt;"><strong><span style="font-family: Arial, palatino, serif;">جهت تمدید حساب، روی دکمه زیر کلیک کنید.</span></strong></span></p>
                                 <p dir="rtl" style="text-align: right; padding-right: 30px;">&nbsp;</p>
                                 <p dir="rtl" style="text-align: right; padding-right: 30px;">&nbsp;</p>
@@ -107,7 +108,7 @@
     </div>
 </div>
 <div style="text-align: center">
-    <a href="{{route('tamdid')}}?usr={{$account->username}}&id={{$account->user_id}}&trans_id={{$trans->trans_id}}" class="btn btn-primary btn-link tamdid">تمدید حساب</a>
+    <a href="http://pay.joyvpn.xyz/tamdid?usr={{$account->username}}&id={{$account->user_id}}&trans_id={{$trans->trans_id}}" class="btn btn-primary btn-link tamdid">تمدید حساب</a>
 </div>
 <div style="text-align: center">
     <a href="https://t.me/JoyVpn_Support" class="btn btn-primary btn-link support">پشتیبانی</a>

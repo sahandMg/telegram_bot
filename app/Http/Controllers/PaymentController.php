@@ -10,6 +10,7 @@ use App\Zarrin_Tamdid;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -45,7 +46,7 @@ class PaymentController extends Controller
 
         $request = $request->all();
         $trans = Transaction::where('trans_id',$request['trans_id'])->first();
-        $request['amount'] = $trans->amount;
+        $request['amount'] = $trans->plan->price;
         $request['type'] = 'tamdid';
         $request['user_id'] = $trans->user_id;
         $request['plan_id'] = $trans->plan_id;

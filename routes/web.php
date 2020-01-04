@@ -47,6 +47,7 @@ Route::get('test',function (){
     $trans = Transaction::find(24);
     $plan = \App\Plan::find(1);
     $account = Accounts::find(2);
+    dd(Carbon::now()->addMonth($account->plan->month),$account->plan->month);
     Mail::send('reminder', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
         $message->to('s23.moghadam@gmail.com');
         $message->subject('یادآوری تمدید حساب');

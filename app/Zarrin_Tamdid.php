@@ -56,15 +56,16 @@ class Zarrin_Tamdid
             if ($result["Status"] == '100' ) {
 
                 DB::beginTransaction();
+                    $account = Accounts::where('username',$this->request['usr'])->first();
                     $trans = new Transaction();
                     $trans->trans_id = 'Zarrin_' . strtoupper(uniqid());
                     $trans->status = 'unpaid';
-                    $trans->amount = $amount;
+                    $trans->amount = $account->plan->price;
                     $trans->authority = $result['Authority'];
                     $trans->username = $this->request['username'];
                     $trans->plan_id = $this->request['plan_id'];
                     $trans->user_id = $this->request['user_id'];
-                    $trans->account_id = $this->request['usr'];
+                    $trans->account_id =$account->id;
 //                    $trans->service = Cache::get($this->request['user_id'].'_service')['value'];
                     $trans->service = $this->request['service'];
                     if (isset($this->request['email'])) {
@@ -172,14 +173,14 @@ class Zarrin_Tamdid
         //     }
 
         // }
+        DB::beginTransaction();
        DB::connection('mysql')->table('transactions')->where('trans_id', $trans->trans_id)->update([
         'status' => 'paid'
         ]);
-        DB::beginTransaction();
         $account = $trans->account;
-        $account->update(['expires_at'=>Carbon::now()->$account->plan->month]);
+        $account->update(['expires_at'=>Carbon::now()->addMonth($account->plan->month)]);
         DB::commit();
-        sendNotif::dispatch($trans);
+        sendNotif::dispatch($trans,$account);
 
     }
 

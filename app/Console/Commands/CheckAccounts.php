@@ -8,6 +8,7 @@ use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Emoji\Emoji;
 use Telegram\Bot\HttpClients\GuzzleHttpClient;
@@ -64,7 +65,7 @@ class CheckAccounts extends Command
         foreach ($accounts as $account){
 
             if(Carbon::now()->diffInDays(Carbon::parse($account->expires_at)) == 0 ){
-
+                Log::alert("Account $account->username Deleted");
                 foreach ($servers as $server){
                     $ch = curl_init($server->ip.':9090?id='.$account->username);
                     curl_setopt($ch, CURLOPT_USERAGENT, 'Telegram Bot');
@@ -123,30 +124,34 @@ class CheckAccounts extends Command
         foreach ($accounts as $account){
 
             $trans = Transaction::where('account_id',$account->id)->where('status','paid')->first();
-            $plan = \App\Plan::where('id',$trans->plan_id)->first();
-            $target_date = Carbon::parse($account->expires_at);
-            $diff = Carbon::now()->diffInDays($target_date);
-            if(Carbon::now() < $target_date && $diff == 7){
-                if(!is_null($trans->email)){
-                    $account->expires_at = \Morilog\Jalali\Jalalian::fromCarbon($target_date)->format('%d %B %Y');
-                    Mail::send('reminder', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
-                        $message->to($trans->email);
-                        $message->subject('یادآوری تمدید حساب');
-                    });
-                }else{
+            if(!is_null($trans)){
 
-                    $api = new \Kavenegar\KavenegarApi( env('SMS') );
-                    $sender = "10008000800600";
-                    $receptor = array($trans->phone);
-                    $message =
-                        'یادآوری تمدید حساب JOY VPN.'
-                        .' کاربر گرامی، تنها ۷ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$accounts->username
-                        .' با قیمت '.$trans->amount.' تومان '
-                        .' به لینک مراجعه کنید '
-                        .route('tamdid')."?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
-                    $api->Send($sender,$receptor,$message);
+                $plan = \App\Plan::where('id',$trans->plan_id)->first();
+                $target_date = Carbon::parse($account->expires_at);
+                $diff = Carbon::now()->diffInDays($target_date);
+                if(Carbon::now() < $target_date && $diff == 7){
+                    if(!is_null($trans->email)){
+                        $account->expires_at = \Morilog\Jalali\Jalalian::fromCarbon($target_date)->format('%d %B %Y');
+                        Mail::send('reminder', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
+                            $message->to($trans->email);
+                            $message->subject('یادآوری تمدید حساب');
+                        });
+                    }else{
+
+                        $api = new \Kavenegar\KavenegarApi( env('SMS') );
+                        $sender = "10008000800600";
+                        $receptor = array($trans->phone);
+                        $message =
+                            'یادآوری تمدید حساب JOY VPN.'
+                            .' کاربر گرامی، تنها ۷ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$accounts->username
+                            .' با قیمت '.$trans->amount.' تومان '
+                            .' به لینک مراجعه کنید '
+                            .route('tamdid')."?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+                        $api->Send($sender,$receptor,$message);
+                    }
                 }
             }
+
         }
 
     }
@@ -159,28 +164,31 @@ class CheckAccounts extends Command
         foreach ($accounts as $account){
 
             $trans = Transaction::where('account_id',$account->id)->where('status','paid')->first();
-            $plan = \App\Plan::where('id',$trans->plan_id)->first();
-            $target_date = Carbon::parse($account->expires_at);
-            $diff = Carbon::now()->diffInDays($target_date);
-            if(Carbon::now() < $target_date && $diff == 1){
-                if(!is_null($trans->email)){
-                    $account->expires_at = \Morilog\Jalali\Jalalian::fromCarbon($target_date)->format('%d %B %Y');
-                    Mail::send('reminder', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
-                        $message->to($trans->email);
-                        $message->subject('یادآوری تمدید حساب');
-                    });
-                }else{
+            if(!is_null($trans)) {
+                $plan = \App\Plan::where('id', $trans->plan_id)->first();
+                $target_date = Carbon::parse($account->expires_at);
+                $diff = Carbon::now()->diffInDays($target_date);
+                if (Carbon::now() < $target_date && $diff == 1) {
+                    Log::alert('User Id ' . $trans->user_id);
+                    if (!is_null($trans->email)) {
+                        $account->expires_at = \Morilog\Jalali\Jalalian::fromCarbon($target_date)->format('%d %B %Y');
+                        Mail::send('reminder', ['account' => $account, 'trans' => $trans, 'plan' => $plan], function ($message) use ($trans) {
+                            $message->to($trans->email);
+                            $message->subject('یادآوری تمدید حساب');
+                        });
+                    } else {
 
-                    $api = new \Kavenegar\KavenegarApi( env('SMS') );
-                    $sender = "10008000800600";
-                    $receptor = array($trans->phone);
-                    $message =
-                        'یادآوری تمدید حساب JOY VPN.'
-                        .' کاربر گرامی، تنها 1 روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$accounts->username
-                        .' با قیمت '.$trans->amount.' تومان '
-                        .' به لینک مراجعه کنید '
-                        .route('tamdid')."?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
-                    $api->Send($sender,$receptor,$message);
+                        $api = new \Kavenegar\KavenegarApi(env('SMS'));
+                        $sender = "10008000800600";
+                        $receptor = array($trans->phone);
+                        $message =
+                            'یادآوری تمدید حساب JOY VPN.'
+                            . ' کاربر گرامی، تنها 1 روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام ' . $account->username
+                            . ' با قیمت ' . $trans->plan->price . ' تومان '
+                            . ' به لینک زیر مراجعه فرمایید. '
+                            . "http://pay.joyvpn.xyz/tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+                        $api->Send($sender, $receptor, $message);
+                    }
                 }
             }
         }

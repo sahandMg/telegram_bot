@@ -300,9 +300,9 @@ class TelegramCommandController extends Controller
                 if(is_null($freeAccount)){
 
                     $account = Accounts::where('plan_id',3)->where('used',0)->first();
-//                    DB::beginTransaction();
+                    DB::beginTransaction();
                     $account->update(['used' => 1,'user_id' => $chat_id,'expires_at'=> Carbon::now()->addDays(3)]);
-//                    DB::commit();
+                    DB::commit();
                     $telegram->sendMessage($msg);
                     $msg_text = ' username: '.$account->username;
                     $msg = [
