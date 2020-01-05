@@ -10,6 +10,14 @@
           <option name="port" value="22" />
         </fileTransfer>
       </webServer>
+      <webServer id="90616d71-c919-495b-9791-74cb7acb74e5" name="cart" url="http://194.32.79.86">
+        <fileTransfer host="194.32.79.86" port="22" rootFolder="/var/www/html/cart.electropak.ir" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

@@ -29,8 +29,7 @@ Route::get('payment/success/{transid}',['as'=>'RemotePaymentSuccess','uses'=>'Pa
 Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'PaymentController@FailedPayment']);
 Route::get('import',['as'=>'importAccount','uses'=>'AccountController@index']);
 Route::post('import',['as'=>'importAccount','uses'=>'AccountController@post_index']);
-
-
+Route::get('missyou/{id}','AffiliateController@landing');
 
 Route::post('getfile',function (\Illuminate\Http\Request $request){
 
@@ -40,20 +39,41 @@ Route::post('getfile',function (\Illuminate\Http\Request $request){
 
 Route::get('run',function (){
 
-    phpinfo();
+
 });
 Route::get('test',function (){
 
-    $trans = Transaction::find(24);
-    $plan = \App\Plan::find(1);
-    $account = Accounts::find(2);
-    dd(Carbon::now()->addMonth($account->plan->month),$account->plan->month);
-    Mail::send('reminder', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
-        $message->to('s23.moghadam@gmail.com');
-        $message->subject('یادآوری تمدید حساب');
-    });
+    $userIds = Accounts::where('used',1)->get()->pluck('user_id')->toArray();
+    $userIds = array_values(array_unique($userIds));
+    dd($userIds);
+//    $inviterShares = Accounts::get()->sum('password');
+//    dd($inviterShares);
+//    $trans = Transaction::find(24);
+//    $plan = \App\Plan::find(1);
+//    $account = Accounts::find(2);
+//    $textMsg =  'یادآوری تمدید حساب JOY VPN.'
+//        . ' کاربر گرامی، تنها 1 روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام ' . $account->username
+//        . ' با قیمت ' . $trans->plan->price . ' تومان '
+//        . ' به لینک زیر مراجعه فرمایید. '
+//        . "http://pay.joyvpn.xyz/tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+//    $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+//    $msg = [
+//        'chat_id' => 83525910,
+//        'text' => $textMsg,
+//        'parse_mode' => 'HTML',
+//    ];
+//    $telegram->sendMessage($msg);
+//    dd(Carbon::now()->addMonth($account->plan->month),$account->plan->month);
+//    Mail::send('reminder', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
+//        $message->to('s23.moghadam@gmail.com');
+//        $message->subject('یادآوری تمدید حساب');
+//    });
 
-//    return view('reminder');
+//    Mail::send('welcome',[],function($message){
+//        $message->to('s23.moghadam@gmail.com');
+////        $message->to('test-wbuck@mail-tester.com');
+//        $message->subject(Emoji::globeShowingAmericas().' !!دنیای بدون مرز!! '.Emoji::globeShowingAmericas());
+//    });
 
 });
 

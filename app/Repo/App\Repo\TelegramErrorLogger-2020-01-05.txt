@@ -1,0 +1,320 @@
+============[Date]============
+[ 2020-01-05 17:09:08  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+
+============[Date]============
+[ 2020-01-05 17:09:31  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+
+============[Date]============
+[ 2020-01-05 17:09:34  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+
+============[Date]============
+[ 2020-01-05 17:10:20  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+
+============[Date]============
+[ 2020-01-05 17:10:22  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+
+============[Date]============
+[ 2020-01-05 17:10:40  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+
+============[Date]============
+[ 2020-01-05 17:10:52  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+
+============[Date]============
+[ 2020-01-05 17:11:00  Asia/Tehran ] 
+==========[Response]==========
+ok:			False
+error_code:		400
+description:		Bad Request: message text is empty
+=========[Sent Data]==========
+[ref]
+ref.text= 
+ref.parse_mode= HTML
+
+
+============[Trace]===========
+#0 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(3192): App\Repo\TelegramErrorLogger::log(Array, Array)
+#1 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(108): App\Repo\Telegram->sendAPIRequest('https://api.tel...', Array)
+#2 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Repo/Telegram.php(193): App\Repo\Telegram->endpoint('sendMessage', Array)
+#3 /Applications/XAMPP/xamppfiles/htdocs/telegram/app/Exceptions/Handler.php(45): App\Repo\Telegram->sendMessage(Array)
+#4 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(81): App\Exceptions\Handler->report(Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#5 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(32): Illuminate\Routing\Pipeline->handleException(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\NotFoundHttpException))
+#6 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#7 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#8 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#9 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#10 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle(Object(Illuminate\Http\Request), Object(Closure))
+#11 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#12 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#13 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\ValidatePostSize->handle(Object(Illuminate\Http\Request), Object(Closure))
+#14 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#15 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/CheckForMaintenanceMode.php(62): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#16 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode->handle(Object(Illuminate\Http\Request), Object(Closure))
+#17 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#18 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/fideloper/proxy/src/TrustProxies.php(57): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#19 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(163): Fideloper\Proxy\TrustProxies->handle(Object(Illuminate\Http\Request), Object(Closure))
+#20 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(53): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}(Object(Illuminate\Http\Request))
+#21 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(104): Illuminate\Routing\Pipeline->Illuminate\Routing\{closure}(Object(Illuminate\Http\Request))
+#22 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(151): Illuminate\Pipeline\Pipeline->then(Object(Closure))
+#23 /Applications/XAMPP/xamppfiles/htdocs/telegram/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(116): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter(Object(Illuminate\Http\Request))
+#24 /Applications/XAMPP/xamppfiles/htdocs/telegram/public/index.php(55): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#25 {main}
+

@@ -4,6 +4,8 @@ namespace App;
 
 use App\Accounts;
 use App\Jobs\sendNotif;
+use App\Jobs\TelegramNotification;
+use App\Repo\IpFinder;
 use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -179,8 +181,94 @@ class Zarrin
         $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
         $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
         $trans->update(['account_id'=>$account->id]);
+
+//  =================  Affiliation Part =================
+
+        $ip = IpFinder::find();
+        $affiliationBuy = Affiliate::where('invitee',$ip)->where('done',0)->first();
+        if(!is_null($affiliationBuy)){
+            $affiliationBuy->update(['invitee_id'=>$trans->user_id,'done'=>1]);
+            $inviterShares = Affiliate::where('inviter',$affiliationBuy->inviter)->get()->sum('done');
+            if($inviterShares == 3){
+
+                $msg = [
+                    'chat_id' => $affiliationBuy->inviter,
+                    'text' => Emoji::fire().'تبریک! فقط ۲ کاربر تا حساب رایگان ۱ ماهه فاصله دارید'.Emoji::fire()
+                ];
+                TelegramNotification::dispatch($msg);
+            }
+            elseif ($inviterShares == 8){
+                $msg = [
+                    'chat_id' => $affiliationBuy->inviter,
+                    'text' => Emoji::fire().'تبریک! فقط ۲ کاربر تا حساب رایگان ۱ ماهه فاصله دارید'.Emoji::fire()
+                ];
+                TelegramNotification::dispatch($msg);
+            }
+            elseif ($inviterShares == 5){
+              $this->affiliateReward5($affiliationBuy);
+            }
+            elseif ($inviterShares == 10){
+                $this->affiliateReward10($affiliationBuy);
+            }
+        }
         DB::commit();
         sendNotif::dispatch($trans,$account);
+
+    }
+
+    private function affiliateReward5($affiliationBuy){
+
+        $newaccount = Accounts::where('plan_id',1)->where('used',0)->first();
+        $newaccount->update(['used'=>1,'user_id'=>$affiliationBuy->inviter,'expires_at'=>Carbon::now()->addMonths(1)]);
+        $newTrans = new Transaction();
+        $newTrans->trans_id = 'Affiliate_'.strtoupper(uniqid());
+        $newTrans->user_id = $affiliationBuy->inviter;
+        $newTrans->plan_id = 1;
+        $newTrans->amount = 0;
+        $newTrans->authority = 'Affiliate';
+        $newTrans->account_id = $newaccount->id;
+        $newTrans->status = 'paid';
+        $newTrans->service = 'cisco';
+        $inviterLastPurchase = Transaction::where('user_id',$affiliationBuy->inviter)->where('status','paid')->first();
+        $newTrans->username = $inviterLastPurchase->username == null?'someone':$inviterLastPurchase->username;
+        $newTrans->save();
+
+        $msg = [
+            'chat_id' => $affiliationBuy->inviter,
+            'text' => Emoji::fire().Emoji::fire().'تبریک! شما ۵ کاربر را به joy vpn ملحق کردید'.Emoji::flexedBicepsMediumLightSkinTone().' حساب رایگان ۱ ماهه شما فعال شد. فقط ۵ نفر تا حساب ۳ ماهه فاصله دارید!'.Emoji::starStruck()
+        ];
+        TelegramNotification::dispatch($msg);
+
+        $msg2 = [
+            'chat_id' => $affiliationBuy->inviter,
+            'text' => ' نام کاربری '.$newaccount->username,
+            'parse_mode' => 'HTML',
+        ];
+        TelegramNotification::dispatch($msg2);
+        $msg3 = [
+            'chat_id' => $affiliationBuy->inviter,
+            'text' => ' کلمه عبور '.$newaccount->password,
+            'parse_mode' => 'HTML',
+        ];
+        TelegramNotification::dispatch($msg3);
+        $msg4 = [
+            'chat_id' => $affiliationBuy->inviter,
+            'text' => ' انقضا '.\Morilog\Jalali\Jalalian::now()->addMonths(1)->format('%B %d، %Y'),
+            'parse_mode' => 'HTML',
+        ];
+        TelegramNotification::dispatch($msg4);
+
+    }
+    private function affiliateReward10($affiliationBuy){
+
+        $newTrans = Transaction::where('user_id',$affiliationBuy->inviter)->where('authority','Affiliate')->first();
+        $newaccount = $newTrans->account;
+        $newaccount->update(['expires_at'=>Carbon::parse($newaccount->expires_at)->addMonths(3)]);
+        $msg = [
+            'chat_id' => $affiliationBuy->inviter,
+            'text' => Emoji::fire().Emoji::fire().'تبریک! شما ۱۰ کاربر را به joy vpn ملحق کردید'.Emoji::flexedBicepsMediumLightSkinTone().' حساب شما به حساب رایگان ۳ ماهه ارتقا پیدا کرد'.Emoji::smilingFaceWithHeartEyes()
+        ];
+        TelegramNotification::dispatch($msg);
 
     }
 

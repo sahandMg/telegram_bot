@@ -46,6 +46,9 @@ class PaymentController extends Controller
 
         $request = $request->all();
         $trans = Transaction::where('trans_id',$request['trans_id'])->first();
+        if(Carbon::now() > Carbon::parse($trans->account->expires_at)){
+            return 'این حساب غیر فعال شده است. لطفااز طریق @JoyVpn_bot درخواست حساب جدید دهید';
+        }
         $request['amount'] = $trans->plan->price;
         $request['type'] = 'tamdid';
         $request['user_id'] = $trans->user_id;

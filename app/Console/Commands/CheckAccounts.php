@@ -65,15 +65,15 @@ class CheckAccounts extends Command
         foreach ($accounts as $account){
 
             if(Carbon::now()->diffInDays(Carbon::parse($account->expires_at)) == 0 ){
-                Log::alert("Account $account->username Deleted");
+                $this->sendAdminNotif($account,'expire');
+                $this->sendExpirationNotif($account);
                 foreach ($servers as $server){
                     $ch = curl_init($server->ip.':9090?id='.$account->username);
                     curl_setopt($ch, CURLOPT_USERAGENT, 'Telegram Bot');
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     $result = curl_exec($ch);
-                    $this->sendNotif($account);
-//                    $account->delete();
+
                 }
             }
 
@@ -88,8 +88,8 @@ class CheckAccounts extends Command
 //                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 //                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 //                    $result = curl_exec($ch);
-//                    $this->sendNotif($account);
-////                    $account->delete();
+//                    $this->sendExpirationNotif($account);
+
 //                }
 //            }
 //
@@ -105,8 +105,8 @@ class CheckAccounts extends Command
 //                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 //                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 //                    $result = curl_exec($ch);
-//                    $this->sendNotif($account);
-////                    $account->delete();
+//                    $this->sendExpirationNotif($account);
+
 //                }
 //            }
 //
@@ -130,6 +130,22 @@ class CheckAccounts extends Command
                 $target_date = Carbon::parse($account->expires_at);
                 $diff = Carbon::now()->diffInDays($target_date);
                 if(Carbon::now() < $target_date && $diff == 7){
+
+//                    ============== Sending Notifications ===============
+                    $this->sendAdminNotif($account,'reminder');
+
+                    $textMsg =
+                    'یادآوری تمدید حساب JOY VPN.'
+                    .' کاربر گرامی، تنها ۷ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$accounts->username
+                    .' با قیمت '.$trans->amount.' تومان '
+                    .' به لینک مراجعه کنید '
+                    ."http://pay.joyvpn.xyz/tamdid??usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+
+                    $this->sendReminderNotif($account,$textMsg);
+
+//                    ============== END ===============
+
+
                     if(!is_null($trans->email)){
                         $account->expires_at = \Morilog\Jalali\Jalalian::fromCarbon($target_date)->format('%d %B %Y');
                         Mail::send('reminder', ['account' => $account, 'trans' => $trans,'plan'=> $plan], function ($message) use($trans) {
@@ -141,12 +157,7 @@ class CheckAccounts extends Command
                         $api = new \Kavenegar\KavenegarApi( env('SMS') );
                         $sender = "10008000800600";
                         $receptor = array($trans->phone);
-                        $message =
-                            'یادآوری تمدید حساب JOY VPN.'
-                            .' کاربر گرامی، تنها ۷ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$accounts->username
-                            .' با قیمت '.$trans->amount.' تومان '
-                            .' به لینک مراجعه کنید '
-                            .route('tamdid')."?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+                        $message = $textMsg ;
                         $api->Send($sender,$receptor,$message);
                     }
                 }
@@ -169,7 +180,19 @@ class CheckAccounts extends Command
                 $target_date = Carbon::parse($account->expires_at);
                 $diff = Carbon::now()->diffInDays($target_date);
                 if (Carbon::now() < $target_date && $diff == 1) {
-                    Log::alert('User Id ' . $trans->user_id);
+//
+//                    ============== Sending Notifications ===============
+                    $this->sendAdminNotif($account,'reminder');
+
+                    $textMsg =  'یادآوری تمدید حساب JOY VPN.'
+                        . ' کاربر گرامی، تنها ۱ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام ' . $account->username
+                        . ' با قیمت ' . $trans->plan->price . ' تومان '
+                        . ' به لینک زیر مراجعه فرمایید. '
+                        . "http://pay.joyvpn.xyz/tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+
+                    $this->sendReminderNotif($account,$textMsg);
+
+//                    ============== END ===============
                     if (!is_null($trans->email)) {
                         $account->expires_at = \Morilog\Jalali\Jalalian::fromCarbon($target_date)->format('%d %B %Y');
                         Mail::send('reminder', ['account' => $account, 'trans' => $trans, 'plan' => $plan], function ($message) use ($trans) {
@@ -181,12 +204,7 @@ class CheckAccounts extends Command
                         $api = new \Kavenegar\KavenegarApi(env('SMS'));
                         $sender = "10008000800600";
                         $receptor = array($trans->phone);
-                        $message =
-                            'یادآوری تمدید حساب JOY VPN.'
-                            . ' کاربر گرامی، تنها 1 روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام ' . $account->username
-                            . ' با قیمت ' . $trans->plan->price . ' تومان '
-                            . ' به لینک زیر مراجعه فرمایید. '
-                            . "http://pay.joyvpn.xyz/tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+                        $message = $textMsg;
                         $api->Send($sender, $receptor, $message);
                     }
                 }
@@ -194,7 +212,42 @@ class CheckAccounts extends Command
         }
 
     }
-    private function sendNotif($account){
+
+    private function sendAdminNotif($account,$type){
+
+        $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+        if($type == 'expire'){
+            $msg = [
+                'chat_id' => 83525910,
+                'text' => "Account $account->username Deleted",
+                'parse_mode' => 'HTML',
+            ];
+            $telegram->sendMessage($msg);
+        }elseif($type == 'reminder'){
+
+            $msg = [
+                'chat_id' => 83525910,
+                'text' => "Account $account->username Reminded",
+                'parse_mode' => 'HTML',
+            ];
+            $telegram->sendMessage($msg);
+        }
+
+
+    }
+//    Users Notification
+
+    private function sendReminderNotif($account,$textMsg){
+
+        $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+        $msg = [
+            'chat_id' => $account->user_id,
+            'text' => $textMsg,
+            'parse_mode' => 'HTML',
+        ];
+        $telegram->sendMessage($msg);
+    }
+    private function sendExpirationNotif($account){
 
         $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
 

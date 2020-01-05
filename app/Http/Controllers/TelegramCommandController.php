@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Accounts;
+use App\Affiliate;
 use App\CacheData;
 use App\Comment;
 use App\Num2En;
@@ -37,9 +38,14 @@ class TelegramCommandController extends Controller
             $cache = new CacheData();
             $cache->username = $this->telegram->FirstName();
             $cache->user_id = $this->telegram->ChatID();
-            $cache->user_id = $this->telegram->ChatID();
             $cache->save();
             $this->cache = $cache;
+            $msg = [
+                'chat_id'=> 83525910,
+                'text'=>'<b> مشتری جدید </b>'.$cache->username,
+                'parse_mode' => 'HTML',
+            ];
+            $this->telegram->sendMessage($msg);
         }
         DB::commit();
     }
@@ -48,7 +54,7 @@ class TelegramCommandController extends Controller
     {
         // $telegram = new Api('844102898:AAFMoS3d6BVX1CNA-TN7gnsegcBLqTCJqd8');
         $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما',
-            'شروع مجدد','cisco','openvpn','open','y','n','شروع','پشتیبانی'
+            'شروع مجدد','cisco','openvpn','open','y','n','شروع','پشتیبانی','shareCounter'
         ];
         $data = '';
         $text = '';
@@ -499,6 +505,15 @@ class TelegramCommandController extends Controller
 //            DB::commit();
 
         }
+        elseif ($data == 'shareCounter'){
+            $affiliateQueryNumber = Affiliate::where('inviter',$chat_id)->where('done',1)->count();
+            $msg = [
+                'chat_id' => $chat_id,
+                'text' =>'تعداد خریدهای انجام شده از لینک شما '.$affiliateQueryNumber.' عدد می‌باشد',
+                'parse_mode' => 'HTML',
+            ];
+            $telegram->sendMessage($msg);
+        }
         DB::commit();
 //        else{
 //            $msg_text = 'منظورت خرید حساب اقتصادی ۳ ماهه هستش ؟';
@@ -579,8 +594,8 @@ class TelegramCommandController extends Controller
         $service = $this->cache->service;
         if($service == 'open'){
             $options = [
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه (دوکاربره) '.Emoji::backhandIndexPointingRight(),"",'1')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی (دوکاربره) '.Emoji::backhandIndexPointingRight(),'','3')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::headphone().' پشتیبانی '.Emoji::headphone(),'https://t.me/JoyVpn_Support'))
@@ -588,8 +603,8 @@ class TelegramCommandController extends Controller
             ];
         }else{
             $options = [
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه '.Emoji::backhandIndexPointingRight(),"",'1')),
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه (دوکاربره) '.Emoji::backhandIndexPointingRight(),"",'1')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی (دوکاربره) '.Emoji::backhandIndexPointingRight(),'','3')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz')),

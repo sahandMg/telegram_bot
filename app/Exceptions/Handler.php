@@ -34,6 +34,26 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+
+        $chat_id = 83525910;
+        $msg = [
+            'chat_id' => $chat_id,
+            'text' => $exception->getMessage() == null ?'No Error':$exception->getMessage(),
+            'parse_mode' => 'HTML',
+        ];
+        $jsonData = json_encode($msg);
+        $ch = curl_init('https://api.telegram.org/bot'.env('BOT_TOKEN').'/sendMessage');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($jsonData)
+        ));
+        curl_exec($ch);
+        curl_close($ch);
+
         parent::report($exception);
     }
 
