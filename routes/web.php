@@ -29,7 +29,8 @@ Route::get('payment/success/{transid}',['as'=>'RemotePaymentSuccess','uses'=>'Pa
 Route::get('payment/canceled/{transid}',['as'=>'RemotePaymentCanceled','uses'=>'PaymentController@FailedPayment']);
 Route::get('import',['as'=>'importAccount','uses'=>'AccountController@index']);
 Route::post('import',['as'=>'importAccount','uses'=>'AccountController@post_index']);
-Route::get('missyou/{id}','AffiliateController@landing');
+Route::get('af/{id}','AffiliateController@landing');
+Route::get('affiliate','AffiliateController@sendNotif');
 
 Route::post('getfile',function (\Illuminate\Http\Request $request){
 

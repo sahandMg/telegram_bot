@@ -29,6 +29,7 @@ class sendNotif implements ShouldQueue
     public function __construct($trans,$account)
     {
         $this->trans = $trans;
+
         $this->account = $account;
     }
 

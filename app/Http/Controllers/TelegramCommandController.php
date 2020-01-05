@@ -506,10 +506,16 @@ class TelegramCommandController extends Controller
 
         }
         elseif ($data == 'shareCounter'){
-            $affiliateQueryNumber = Affiliate::where('inviter',$chat_id)->where('done',1)->count();
+//            $affiliateQueryNumber = Affiliate::where('inviter',$chat_id)->where('done',1)->count();
+//            $msg = [
+//                'chat_id' => $chat_id,
+//                'text' =>'تعداد خریدهای انجام شده از لینک شما '.$affiliateQueryNumber.' عدد می‌باشد',
+//                'parse_mode' => 'HTML',
+//            ];
+//            $telegram->sendMessage($msg);
             $msg = [
-                'chat_id' => $chat_id,
-                'text' =>'تعداد خریدهای انجام شده از لینک شما '.$affiliateQueryNumber.' عدد می‌باشد',
+                'chat_id' => 83525910,
+                'text' =>'تعداد خریدهای انجام شده از لینک شما',
                 'parse_mode' => 'HTML',
             ];
             $telegram->sendMessage($msg);
