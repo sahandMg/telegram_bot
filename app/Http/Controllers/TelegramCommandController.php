@@ -6,6 +6,7 @@ use App\Accounts;
 use App\Affiliate;
 use App\CacheData;
 use App\Comment;
+use App\Jobs\TelegramNotification;
 use App\Num2En;
 use App\Ovpn;
 use App\Plan;
@@ -450,6 +451,12 @@ class TelegramCommandController extends Controller
         }
         elseif ($data == 'y'){
 //            DB::beginTransaction();
+            $msg = [
+                'chat_id' => 83525910,
+                'text' => 'کامنت جدید از '.$this->telegram->FirstName().' '.$this->telegram->LastName(),
+                'parse_mode' => 'HTML',
+            ];
+            TelegramNotification::dispatch($msg);
             $comment = Comment::where('user_id',$this->telegram->ChatID())->first();
             if(is_null($comment)){
                 $comment = new Comment();
@@ -478,6 +485,12 @@ class TelegramCommandController extends Controller
 
         }elseif ($data == 'n'){
 //            DB::beginTransaction();
+            $msg = [
+                'chat_id' => 83525910,
+                'text' => 'کامنت جدید از '.$this->telegram->FirstName(),
+                'parse_mode' => 'HTML',
+            ];
+            TelegramNotification::dispatch($msg);
             $comment = Comment::where('user_id',$this->telegram->ChatID())->first();
             if(is_null($comment)){
                 $comment = new Comment();
@@ -506,19 +519,14 @@ class TelegramCommandController extends Controller
 
         }
         elseif ($data == 'shareCounter'){
-//            $affiliateQueryNumber = Affiliate::where('inviter',$chat_id)->where('done',1)->count();
-//            $msg = [
-//                'chat_id' => $chat_id,
-//                'text' =>'تعداد خریدهای انجام شده از لینک شما '.$affiliateQueryNumber.' عدد می‌باشد',
-//                'parse_mode' => 'HTML',
-//            ];
-//            $telegram->sendMessage($msg);
+            $affiliateQueryNumber = Affiliate::where('inviter',$chat_id)->where('done',1)->count();
             $msg = [
-                'chat_id' => 83525910,
-                'text' =>'تعداد خریدهای انجام شده از لینک شما',
+                'chat_id' => $chat_id,
+                'text' =>'تعداد خریدهای انجام شده از لینک شما '.$affiliateQueryNumber.' عدد می‌باشد',
                 'parse_mode' => 'HTML',
             ];
             $telegram->sendMessage($msg);
+
         }
         DB::commit();
 //        else{

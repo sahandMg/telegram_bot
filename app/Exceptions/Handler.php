@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Jobs\TelegramNotification;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -38,21 +39,13 @@ class Handler extends ExceptionHandler
         $chat_id = 83525910;
         $msg = [
             'chat_id' => $chat_id,
-            'text' => $exception->getMessage() == null ?'No Error':$exception->getMessage(),
+            'text' =>
+                $exception->getMessage() == null ?
+                'No Error --> '. $exception->getFile().' Code = '.$exception->getCode():
+                $exception->getMessage().' In --> '.$exception->getFile(),
             'parse_mode' => 'HTML',
         ];
-        $jsonData = json_encode($msg);
-        $ch = curl_init('https://api.telegram.org/bot'.env('BOT_TOKEN').'/sendMessage');
-        curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($jsonData)
-        ));
-        curl_exec($ch);
-        curl_close($ch);
+       TelegramNotification::dispatch($msg);
 
         parent::report($exception);
     }

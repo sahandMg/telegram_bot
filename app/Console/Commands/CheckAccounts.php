@@ -56,6 +56,7 @@ class CheckAccounts extends Command
     }
     private function expire(){
 
+
         DB::beginTransaction();
         $accounts = Accounts::where('used',1)->get();
 //        $freeAccounts = $accounts->where('plan_id',3);

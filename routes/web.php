@@ -38,15 +38,11 @@ Route::post('getfile',function (\Illuminate\Http\Request $request){
 
 })->name('getfile');
 
-Route::get('run',function (){
-
-
-});
 Route::get('test',function (){
 
-    $userIds = Accounts::where('used',1)->get()->pluck('user_id')->toArray();
-    $userIds = array_values(array_unique($userIds));
-    dd($userIds);
+//    $userIds = Accounts::where('used',1)->get()->pluck('user_id')->toArray();
+//    $userIds = array_values(array_unique($userIds));
+//    dd($userIds);
 //    $inviterShares = Accounts::get()->sum('password');
 //    dd($inviterShares);
 //    $trans = Transaction::find(24);
@@ -83,24 +79,29 @@ Route::get('comment',function (){
 
     $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
 //    Accounts::where('user_id',);
-
-    $chat_id = 83525910;
+    if(!isset($_GET['id'])){
+        return 'enter chat id';
+    }else{
+        $id = $_GET['id'];
+    }
+    $chat_id = $id;
     $options = [
         array($telegram->buildInlineKeyboardButton(Emoji::okHandMediumLightSkinTone() .' خوبه تمدید می‌کنم '.Emoji::okHandMediumLightSkinTone(),'','y')),
         array($telegram->buildInlineKeyboardButton(Emoji::angryFace() .' نه راضی نیستم '.Emoji::angryFace(),'','n'))
     ];
     $msg = [
         'chat_id' => $chat_id,
-        'text' => Emoji::thinkingFace().' از خدمات ما راضی هستید؟ '.Emoji::thinkingFace(),
+        'text' => Emoji::thinkingFace().' از خدمات ما راضایت دارید؟ '.Emoji::thinkingFace(),
         'parse_mode' => 'HTML',
         'reply_markup' => $telegram->buildInlineKeyboard($options),
     ];
 
     $telegram->sendMessage($msg);
+    \App\Jobs\Activities::dispatch($chat_id,'از خدمات ما راضایت دارید؟');
 
 });
 
-Route::get('faq',function (){
+Route::get('support',function (){
 
     if(!isset($_GET['id'])){
         return 'enter chat id';
@@ -121,7 +122,9 @@ Route::get('faq',function (){
         'reply_markup' => $telegram->buildInlineKeyboard($options),
     ];
 
-    $telegram->sendMessage($msg);
+//    $telegram->sendMessage($msg);
+
+    \App\Jobs\Activities::dispatch($chat_id,' درصورت وجود هرگونه مشکل و یا سوال با پشتیبانی در ارتباط باشید');
 });
 
 Route::get('tamdid','PaymentController@tamdid')->name('tamdid');

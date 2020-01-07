@@ -230,7 +230,7 @@ class Zarrin
         $newTrans->status = 'paid';
         $newTrans->service = 'cisco';
         $inviterLastPurchase = Transaction::where('user_id',$affiliationBuy->inviter)->where('status','paid')->first();
-        $newTrans->username = $inviterLastPurchase->username == null?'someone':$inviterLastPurchase->username;
+        $newTrans->username = $inviterLastPurchase == null?'someone':$inviterLastPurchase->username;
         $newTrans->save();
 
         $msg = [
