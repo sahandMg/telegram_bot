@@ -45,7 +45,16 @@ class PaymentController extends Controller
     public function tamdid(Request $request){
 
         $request = $request->all();
+        if(!isset($request['trans_id']) || !isset($request['usr']) || !isset($request['id'])){
+
+            return 'لینک نامعتبر';
+        }
         $trans = Transaction::where('trans_id',$request['trans_id'])->first();
+
+        if(is_null($trans)){
+
+            return 'لینک نامعتبر';
+        }
         if(Carbon::now() > Carbon::parse($trans->account->expires_at)){
             return 'این حساب غیر فعال شده است. لطفااز طریق @JoyVpn_bot درخواست حساب جدید دهید';
         }

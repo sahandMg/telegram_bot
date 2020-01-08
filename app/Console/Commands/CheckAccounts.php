@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Accounts;
 use App\Server;
+use App\ShortLink;
 use App\Transaction;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -134,13 +135,20 @@ class CheckAccounts extends Command
 
 //                    ============== Sending Notifications ===============
                     $this->sendAdminNotif($account,'reminder');
-
+                    \App\Jobs\Activities::dispatch($account->user_id,'یادآوری حساب');
+//                    DB::beginTransaction();
+//                    $link = new ShortLink();
+//                    $link->origin = "tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+//                    $link->abbr = '/'.str_split(uniqid(),4)[2];
+//                    $link->save();
+//                    DB::commit();
                     $textMsg =
                     'یادآوری تمدید حساب JOY VPN.'
                     .' کاربر گرامی، تنها ۷ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$accounts->username
                     .' با قیمت '.$trans->amount.' تومان '
                     .' به لینک مراجعه کنید '
                     ."http://pay.joyvpn.xyz/tamdid??usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+//                    . "http://pay.joyvpn.xyz$link->abbr";
 
                     $this->sendReminderNotif($account,$textMsg);
 
@@ -184,12 +192,19 @@ class CheckAccounts extends Command
 //
 //                    ============== Sending Notifications ===============
                     $this->sendAdminNotif($account,'reminder');
-
+                    \App\Jobs\Activities::dispatch($account->user_id,'یادآوری حساب');
+//                    DB::beginTransaction();
+//                    $link = new ShortLink();
+//                    $link->origin = "tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+//                    $link->abbr = '/'.str_split(uniqid(),4)[2];
+//                    $link->save();
+//                    DB::commit();
                     $textMsg =  'یادآوری تمدید حساب JOY VPN.'
                         . ' کاربر گرامی، تنها ۱ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام ' . $account->username
                         . ' با قیمت ' . $trans->plan->price . ' تومان '
                         . ' به لینک زیر مراجعه فرمایید. '
                         . "http://pay.joyvpn.xyz/tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+//                        . "http://pay.joyvpn.xyz$link->abbr";
 
                     $this->sendReminderNotif($account,$textMsg);
 

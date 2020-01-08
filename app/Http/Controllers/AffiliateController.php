@@ -27,6 +27,7 @@ class AffiliateController extends Controller
 💥 <b>⚡️دوستاتو بیار به joy vpn ، حساب رایگان ببر!🤩🤩</b>
 
 ✅ اگه ۵ تا از دوستات از لینک زیر vpn بخرن یه حساب ۱ ماهه رایگان نوش جانت😋 اگه برسونیش به ۱۰ تا ، حسابت به ۳ ماهه ارتقا پیدا میکنه!! به همین راحتی😉😎
+کافیه لینک زیر رو برای دوستات بفرستی👇👇
 
 <a href='http://pay.joyvpn.xyz/af/$id'>http://joyvpn.xyz/af/$id</a>
 
@@ -37,7 +38,8 @@ class AffiliateController extends Controller
                 'parse_mode'=>'HTML',
                 'reply_markup' => $telegram->buildInlineKeyBoard($options)
             ];
-            \App\Jobs\TelegramNotification::dispatch($msg);
+//            \App\Jobs\TelegramNotification::dispatch($msg);
+        $telegram->sendMessage($msg);
         \App\Jobs\Activities::dispatch($id,'پیام افیلیت');
 //        }
 

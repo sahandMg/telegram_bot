@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Jobs\TelegramNotification;
+use App\Repo\IpFinder;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -41,8 +42,10 @@ class Handler extends ExceptionHandler
             'chat_id' => $chat_id,
             'text' =>
                 $exception->getMessage() == null ?
-                'No Error --> '. $exception->getFile().' Code = '.$exception->getCode():
-                $exception->getMessage().' In --> '.$exception->getFile(),
+                'No Error --> '. $exception->getFile().' & Code = '.$exception->getCode().
+                ' & IP --> '.IpFinder::find():
+                $exception->getMessage().' In --> '.$exception->getFile().
+                ' At line --> '.$exception->getLine().' & IP --> '.IpFinder::find(),
             'parse_mode' => 'HTML',
         ];
        TelegramNotification::dispatch($msg);

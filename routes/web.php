@@ -13,9 +13,11 @@
 use App\Accounts;
 use App\Num2En;
 use App\Server;
+use App\ShortLink;
 use App\Transaction;
 use Carbon\Carbon;
 use GuzzleHttp\Client as GuzzleClient;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Emoji\Emoji;
@@ -122,7 +124,7 @@ Route::get('support',function (){
         'reply_markup' => $telegram->buildInlineKeyboard($options),
     ];
 
-//    $telegram->sendMessage($msg);
+    $telegram->sendMessage($msg);
 
     \App\Jobs\Activities::dispatch($chat_id,' درصورت وجود هرگونه مشکل و یا سوال با پشتیبانی در ارتباط باشید');
 });
