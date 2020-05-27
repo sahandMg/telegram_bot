@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 
 use App\Accounts;
+use App\Plan;
 use App\Transaction;
 use App\Zarrin;
+use App\Zarrin_Loyal;
 use App\Zarrin_Tamdid;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -64,6 +66,7 @@ class PaymentController extends Controller
         $request['plan_id'] = $trans->plan_id;
         $request['username'] = $trans->username;
         $request['service'] = $trans->service;
+        $request['callback'] = 'http://pay.joyvpn.xyz/zarrin/callback/tamdid';
         if(!is_null($trans->phone)){
             $request['phone'] = $trans->phone;
         }else{
@@ -82,11 +85,61 @@ class PaymentController extends Controller
     }
     public function ZarrinCallbackTamdid(Request $request){
 
-
-        $zarrin = new Zarrin_Tamdid($request->all());
+        $request = $request->all();
+        $request['type'] = 'tamdid';
+        $zarrin = new Zarrin_Tamdid($request);
 
         return $zarrin->verify();
 
+    }
+
+//    gives old users some discount to buy new account
+
+    public function loyalUser(Request $request){
+
+        if(1 == 1){
+
+            $plan_id = $request->pid;
+            $user_id = $request->uid;
+            $trans = Transaction::where('user_id',$user_id)->where('status','paid')->first();
+            $plan = Plan::where('id',$plan_id)->first();
+            if(is_null($trans) || is_null($plan)){
+                return 'Wrong Link Address';
+            }
+            $discount = env('ACCOUNT_DISCOUNT');
+            $plan = Plan::where('id',$plan_id)->first();
+
+            $myrequest['amount'] = $plan->price * (1 - $discount);
+            $myrequest['user_id'] = $user_id;
+            $myrequest['plan_id'] = $plan->id;
+            $myrequest['username'] = $trans->username;
+            $myrequest['service'] = 'cisco';
+            $myrequest['callback'] = 'http://pay.joyvpn.xyz/zarrin/callback/ren';
+            if(!is_null($trans->phone)){
+                $myrequest['phone'] = $trans->phone;
+            }else{
+                $myrequest['email'] = $trans->email;
+            }
+            $zarrin = new Zarrin_Loyal($myrequest);
+            $result = $zarrin->create();
+            if($result != 404){
+
+                return redirect('https://www.zarinpal.com/pg/StartPay/' . $result["Authority"]);
+            }
+            else{
+                return 'اشکالی در پرداخت پیش آمده';
+            }
+        }else{
+            return 'لینک نامعتبر';
+        }
+
+    }
+    public function ZarrinCallbackRenew(Request $request){
+
+        $request = $request->all();
+        $request['type'] = 'ren';
+        $zarrin = new Zarrin_Loyal($request);
+        return $zarrin->verify();
     }
 
 

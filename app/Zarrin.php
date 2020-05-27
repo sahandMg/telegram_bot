@@ -87,10 +87,15 @@ class Zarrin
     public function verify(){
         $transactionId = $this->request['Authority'];
         $trans = Transaction::where('authority',$transactionId)->first();
+        $cached = CacheData::where('user_id',$trans->user_id)->where('closed',0)->first();
         if(is_null($trans)){
             return 'کد تراکنش نادرست است';
         }
         if($trans->status == 'paid'){
+            return 'تراکنش تکراری است';
+        }
+        if(is_null($cached)){
+
             return 'تراکنش تکراری است';
         }
 
@@ -114,7 +119,11 @@ class Zarrin
             return "cURL Error #:" . $err;
         } else {
             DB::beginTransaction();
-            CacheData::where('user_id',$trans->user_id)->where('closed',0)->first()->update(['closed'=>1]);
+
+            $cached->update(['closed'=>1]);
+//            if(!is_null($cached)){
+//                $cached->
+//            }
             DB::commit();
             if ($result['Status'] == '100') {
 
@@ -132,19 +141,29 @@ class Zarrin
                     'text' => " $char $char پرداخت شما ناموفق بود. شماره تراکنش : $trans->trans_id",
                     'parse_mode' => 'HTML',
                 ];
-                $data = array($msg);
-                $jsonData = json_encode($data);
-                $ch = curl_init('https://vitamin-g.ir/api/hook?type=canceled');
-                curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Content-Length: ' . strlen($jsonData)
-                ));
-                curl_exec($ch);
-                curl_close($ch);
+                TelegramNotification::dispatch($msg);
+                $telegram = new \App\Repo\Telegram(env('BOT_TOKEN'));
+                $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
+                $msg2 = [
+                    'chat_id' => $trans->user_id,
+                    'text' => 'جهت خرید مجدد، کلیک کنید',
+                    'parse_mode' => 'HTML',
+                    'reply_markup' => $telegram->buildInlineKeyboard($options),
+                ];
+                TelegramNotification::dispatch($msg2);
+//                $data = array($msg);
+//                $jsonData = json_encode($data);
+//                $ch = curl_init('https://vitamin-g.ir/api/hook?type=canceled');
+//                curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
+//                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+//                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+//                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+//                    'Content-Type: application/json',
+//                    'Content-Length: ' . strlen($jsonData)
+//                ));
+//                curl_exec($ch);
+//                curl_close($ch);
 
                 return redirect()->route('RemotePaymentCanceled', ['transid' => $trans->trans_id]);
             }
@@ -189,7 +208,7 @@ class Zarrin
         if(!is_null($affiliationBuy)){
             $affiliationBuy->update(['invitee_id'=>$trans->user_id,'done'=>1]);
             $inviterShares = Affiliate::where('inviter',$affiliationBuy->inviter)->get()->sum('done');
-            if($inviterShares == 3){
+            if($inviterShares == 1){
 
                 $msg = [
                     'chat_id' => $affiliationBuy->inviter,
@@ -197,17 +216,17 @@ class Zarrin
                 ];
                 TelegramNotification::dispatch($msg);
             }
-            elseif ($inviterShares == 8){
+            elseif ($inviterShares == 4){
                 $msg = [
                     'chat_id' => $affiliationBuy->inviter,
-                    'text' => Emoji::fire().'تبریک! فقط ۲ کاربر تا حساب رایگان ۱ ماهه فاصله دارید'.Emoji::fire()
+                    'text' => Emoji::fire().'تبریک! فقط ۲ کاربر تا حساب رایگان ۳ ماهه فاصله دارید'.Emoji::fire()
                 ];
                 TelegramNotification::dispatch($msg);
             }
-            elseif ($inviterShares == 5){
+            elseif ($inviterShares == 3){
               $this->affiliateReward5($affiliationBuy);
             }
-            elseif ($inviterShares == 10){
+            elseif ($inviterShares == 6){
                 $this->affiliateReward10($affiliationBuy);
             }
         }
@@ -235,7 +254,7 @@ class Zarrin
 
         $msg = [
             'chat_id' => $affiliationBuy->inviter,
-            'text' => Emoji::fire().Emoji::fire().'تبریک! شما ۵ کاربر را به joy vpn ملحق کردید'.Emoji::flexedBicepsMediumLightSkinTone().' حساب رایگان ۱ ماهه شما فعال شد. فقط ۵ نفر تا حساب ۳ ماهه فاصله دارید!'.Emoji::starStruck()
+            'text' => Emoji::fire().Emoji::fire().'تبریک! شما ۳ کاربر را به joy vpn ملحق کردید'.Emoji::flexedBicepsMediumLightSkinTone().' حساب رایگان ۱ ماهه شما فعال شد. فقط ۵ نفر تا حساب ۳ ماهه فاصله دارید!'.Emoji::starStruck()
         ];
         TelegramNotification::dispatch($msg);
 
@@ -266,7 +285,7 @@ class Zarrin
         $newaccount->update(['expires_at'=>Carbon::parse($newaccount->expires_at)->addMonths(3)]);
         $msg = [
             'chat_id' => $affiliationBuy->inviter,
-            'text' => Emoji::fire().Emoji::fire().'تبریک! شما ۱۰ کاربر را به joy vpn ملحق کردید'.Emoji::flexedBicepsMediumLightSkinTone().' حساب شما به حساب رایگان ۳ ماهه ارتقا پیدا کرد'.Emoji::smilingFaceWithHeartEyes()
+            'text' => Emoji::fire().Emoji::fire().'تبریک! شما ۶ کاربر را به joy vpn ملحق کردید'.Emoji::flexedBicepsMediumLightSkinTone().' حساب شما به حساب رایگان ۳ ماهه ارتقا پیدا کرد'.Emoji::smilingFaceWithHeartEyes()
         ];
         TelegramNotification::dispatch($msg);
 

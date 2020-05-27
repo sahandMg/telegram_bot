@@ -19,7 +19,12 @@ class IpFinder
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
+            if(isset($_SERVER['REMOTE_ADDR'])){
+
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }else{
+                $ip = 'Unknown';
+            }
         }
         return $ip;
     }

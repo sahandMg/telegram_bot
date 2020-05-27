@@ -57,8 +57,6 @@ class TelegramCommandController extends Controller
         $dic = ['/start','refused','restart','لیست تراکنش‌ها','تماس با ما',
             'شروع مجدد','cisco','openvpn','open','y','n','شروع','پشتیبانی','shareCounter'
         ];
-        $data = '';
-        $text = '';
         $telegram =  $this->telegram;
         $tgResp = $request->all();
         if(isset($tgResp['message'])){
@@ -114,7 +112,6 @@ class TelegramCommandController extends Controller
             $this->contactUs();
         }
 
-
         /*
          * ========= GLASSY BTN CLICKED ===========
          */
@@ -150,7 +147,7 @@ class TelegramCommandController extends Controller
                             if (strpos($text, '@')) {
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             } else {
-                                $text = Num2En::en($text);
+//                                $text = Num2En::en($text);
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'phone' => $text, 'plan_id' => $plan->id]);
                             }
                             $msg = [
@@ -186,13 +183,14 @@ class TelegramCommandController extends Controller
                             }
 
                         } elseif ($cached->plan_id == 2) {
+
                             $plan = Plan::where('id',2)->first();
                             $price = $plan->price;
                             if (strpos($text, '@')) {
 
                                 $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
                             } else {
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
+                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'phone' => $text, 'plan_id' => $plan->id]);
                             }
                             $msg = [
                                 'chat_id' => $chat_id,
@@ -225,10 +223,10 @@ class TelegramCommandController extends Controller
                         }
                     }
                 }
-
-
             }
+    }
 
+    private function paymentInit(){
 
     }
 
@@ -301,6 +299,9 @@ class TelegramCommandController extends Controller
             ];
 //            $service = Cache::get($chat_id.'_service')['value'];
             $service = $this->cache->service;
+            if(is_null($service)){
+                $service = 'cisco';
+            }
             $freeAccount = null;
             if($service == 'cisco'){
                 $freeAccount = Accounts::where('user_id',$chat_id)->where('plan_id',3)->first();

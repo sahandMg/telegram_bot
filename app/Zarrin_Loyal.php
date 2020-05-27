@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 use Morilog\Jalali\Jalalian;
 use Spatie\Emoji\Emoji;
 
-class Zarrin_Tamdid
+class Zarrin_Loyal
 {
 
     public $request;
@@ -56,26 +56,24 @@ class Zarrin_Tamdid
             if ($result["Status"] == '100' ) {
 
                 DB::beginTransaction();
-                    $account = Accounts::where('username',$this->request['usr'])->first();
-                    $trans = new Transaction();
-                    $trans->trans_id = 'Zarrin_' . strtoupper(uniqid());
-                    $trans->status = 'unpaid';
-                    $trans->amount = $account->plan->price;
-                    $trans->authority = $result['Authority'];
-                    $trans->username = $this->request['username'];
-                    $trans->plan_id = $this->request['plan_id'];
-                    $trans->user_id = $this->request['user_id'];
-                    $trans->account_id =$account->id;
+                $trans = new Transaction();
+                $trans->trans_id = 'Zarrin_' . strtoupper(uniqid());
+                $trans->status = 'unpaid';
+                $trans->amount = $amount;
+                $trans->authority = $result['Authority'];
+                $trans->username = $this->request['username'];
+                $trans->plan_id = $this->request['plan_id'];
+                $trans->user_id = $this->request['user_id'];
 //                    $trans->service = Cache::get($this->request['user_id'].'_service')['value'];
-                    $trans->service = $this->request['service'];
-                    if (isset($this->request['email'])) {
+                $trans->service = $this->request['service'];
+                if (isset($this->request['email'])) {
 
-                        $trans->email = $this->request['email'];
-                    } else {
+                    $trans->email = $this->request['email'];
+                } else {
 
-                        $trans->phone = $this->request['phone'];
-                    }
-                    $trans->save();
+                    $trans->phone = $this->request['phone'];
+                }
+                $trans->save();
                 DB::commit();
                 return $result;
             } else {
@@ -177,17 +175,12 @@ class Zarrin_Tamdid
        DB::connection('mysql')->table('transactions')->where('trans_id', $trans->trans_id)->update([
         'status' => 'paid'
         ]);
-        if($this->request['type'] == 'ren'){
+
 
             $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
             $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
             $trans->update(['account_id'=>$account->id]);
 
-        }else{
-
-            $account = $trans->account;
-            $account->update(['expires_at'=>Carbon::parse($account->expires_at)->addMonth($account->plan->month)]);
-        }
         DB::commit();
         sendNotif::dispatch($trans,$account);
 

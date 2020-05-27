@@ -65,8 +65,8 @@ class CheckAccounts extends Command
 //        $three_monthly = $accounts->where('plan_id',2);
         $servers = Server::where('status','up')->get();
         foreach ($accounts as $account){
-
-            if(Carbon::now()->diffInDays(Carbon::parse($account->expires_at)) == 0 ){
+            $target = Carbon::parse($account->expires_at);
+            if(Carbon::now()->diffInHours($target) == 0 && Carbon::now() > $target ){
                 $this->sendAdminNotif($account,'expire');
                 $this->sendExpirationNotif($account);
                 foreach ($servers as $server){
@@ -130,8 +130,8 @@ class CheckAccounts extends Command
 
                 $plan = \App\Plan::where('id',$trans->plan_id)->first();
                 $target_date = Carbon::parse($account->expires_at);
-                $diff = Carbon::now()->diffInDays($target_date);
-                if(Carbon::now() < $target_date && $diff == 7){
+                $diff = Carbon::now()->diffInHours($target_date);
+                if(Carbon::now() < $target_date && $diff == 168 ){
 
 //                    ============== Sending Notifications ===============
                     $this->sendAdminNotif($account,'reminder');
@@ -144,10 +144,10 @@ class CheckAccounts extends Command
 //                    DB::commit();
                     $textMsg =
                     'یادآوری تمدید حساب JOY VPN.'
-                    .' کاربر گرامی، تنها ۷ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$accounts->username
+                    .' کاربر گرامی، تنها ۷ روز از اعتبار حساب شما باقی مانده. جهت تمدید حساب با نام '.$account->username
                     .' با قیمت '.$trans->amount.' تومان '
                     .' به لینک مراجعه کنید '
-                    ."http://pay.joyvpn.xyz/tamdid??usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
+                    ."http://pay.joyvpn.xyz/tamdid?usr=$account->username&id=$account->user_id&trans_id=$trans->trans_id";
 //                    . "http://pay.joyvpn.xyz$link->abbr";
 
                     $this->sendReminderNotif($account,$textMsg);
@@ -187,8 +187,8 @@ class CheckAccounts extends Command
             if(!is_null($trans)) {
                 $plan = \App\Plan::where('id', $trans->plan_id)->first();
                 $target_date = Carbon::parse($account->expires_at);
-                $diff = Carbon::now()->diffInDays($target_date);
-                if (Carbon::now() < $target_date && $diff == 1) {
+                $diff = Carbon::now()->diffInHours($target_date);
+                if (Carbon::now() < $target_date && $diff == 24) {
 //
 //                    ============== Sending Notifications ===============
                     $this->sendAdminNotif($account,'reminder');

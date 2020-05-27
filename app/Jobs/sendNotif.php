@@ -47,7 +47,7 @@ class sendNotif implements ShouldQueue
         // update created transaction record
         $plan = DB::table('plans')->where('id',$trans->plan_id)->first();
 
-        $char = Emoji::heavyCheckMark();
+        $char = Emoji::eightSpokedAsterisk();
         $msg = [
             'chat_id' => $trans->user_id,
             'text' => "$char  با تشکر از خرید شما $char",
@@ -73,6 +73,20 @@ class sendNotif implements ShouldQueue
             'text' => ' شماره تراکنش '.$trans->trans_id,
             'parse_mode' => 'HTML',
         ];
+
+        TelegramNotification::dispatch($msg);
+        TelegramNotification::dispatch($msg2);
+        TelegramNotification::dispatch($msg3);
+        TelegramNotification::dispatch($msg4);
+        TelegramNotification::dispatch($msg5);
+        $options = [array($telegram->buildInlineKeyBoardButton('شروع مجدد','','restart'))];
+        $msg6 = [
+            'chat_id' => $msg['chat_id'],
+            'text' => 'جهت خرید مجدد، کلیک کنید',
+            'parse_mode' => 'HTML',
+            'reply_markup' => $telegram->buildInlineKeyboard($options),
+        ];
+        TelegramNotification::dispatch($msg6);
 
         if($trans->email != null){
 //
@@ -102,18 +116,18 @@ class sendNotif implements ShouldQueue
             $message->subject('رسید پرداخت');
         });
 
-        $data = array($msg,$msg2,$msg3,$msg4,$msg5);
-        $jsonData = json_encode($data);
-        $ch = curl_init('https://vitamin-g.ir/api/hook?type=success');
-        curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($jsonData)
-        ));
-        curl_exec($ch);
-        curl_close($ch);
+//        $data = array($msg,$msg2,$msg3,$msg4,$msg5);
+//        $jsonData = json_encode($data);
+//        $ch = curl_init('https://vitamin-g.ir/api/hook?type=success');
+//        curl_setopt($ch, CURLOPT_USERAGENT, 'JOY VPN HandShake');
+//        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+//            'Content-Type: application/json',
+//            'Content-Length: ' . strlen($jsonData)
+//        ));
+//        curl_exec($ch);
+//        curl_close($ch);
     }
 }

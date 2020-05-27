@@ -14,7 +14,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\CheckAccounts::class,
-        \App\Console\Commands\SendMail::class
+        \App\Console\Commands\SendMail::class,
+        \App\Console\Commands\updateList::class,
+        \App\Console\Commands\checkPrice::class,
     ];
 
     /**

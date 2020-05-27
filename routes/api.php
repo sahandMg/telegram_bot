@@ -20,7 +20,6 @@ use \Illuminate\Support\Facades\DB;
 
 Route::get('check', function() {
 
-    dd(__DIR__);
     // $telegram = new Api(env('BOT_TOKEN'));
     // $updates = $telegram->getMe();
 
