@@ -142,88 +142,67 @@ class TelegramCommandController extends Controller
 
                         if ($cached->plan_id == 1) {
 
-                            $plan = Plan::where('id',1)->first();
-                            $price = $plan->price;
-                            if (strpos($text, '@')) {
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
-                            } else {
-//                                $text = Num2En::en($text);
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'phone' => $text, 'plan_id' => $plan->id]);
-                            }
-                            $msg = [
-                                'chat_id' => $chat_id,
-                                'text' => 'لطفا منتظر بمانید',
-                                'parse_mode' => 'HTML',
-                            ];
-                            $telegram->sendMessage($msg);
-
-                            $result = $zarrin->create();
-                            if($result != 404){
-                                $option = [
-                                    array($telegram->buildInlineKeyboardButton('هدایت به درگاه پرداخت', 'https://www.zarinpal.com/pg/StartPay/' . $result["Authority"]), $telegram->buildInlineKeyboardButton('انصراف', '', 'refused'))
-                                ];
-                                $msg_text = " مبلغ قابل پرداخت : $price تومان ";
-                                $msg = [
-                                    'chat_id' => $chat_id,
-                                    'text' => $msg_text,
-                                    'parse_mode' => 'HTML',
-                                    'reply_markup' => $telegram->buildInlineKeyboard($option)
-                                ];
-                                $telegram->sendMessage($msg);
-                                return 200;
-                            }else{
-                                $msg = [
-                                    'chat_id' => $chat_id,
-                                    'text' => 'مشکلی در ارتباط با درگاه پیش آمده است. لطفا دوباره تلاش کنید',
-                                    'parse_mode' => 'HTML',
-                                ];
-                                $telegram->sendMessage($msg);
-
-                                return 200;
-                            }
+                            $this->zarinInit(1,$text,$username,$userId,$chat_id,$telegram);
 
                         } elseif ($cached->plan_id == 2) {
 
-                            $plan = Plan::where('id',2)->first();
-                            $price = $plan->price;
-                            if (strpos($text, '@')) {
+                            $this->zarinInit(2,$text,$username,$userId,$chat_id,$telegram);
+                        }
 
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
-                            } else {
-                                $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'phone' => $text, 'plan_id' => $plan->id]);
-                            }
-                            $msg = [
-                                'chat_id' => $chat_id,
-                                'text' => 'لطفا منتظر بمانید',
-                                'parse_mode' => 'HTML',
-                            ];
-                            $telegram->sendMessage($msg);
-                            $result = $zarrin->create();
-                            if($result != 404){
-                                $option = [
-                                    array($telegram->buildInlineKeyboardButton('هدایت به درگاه پرداخت', 'https://www.zarinpal.com/pg/StartPay/' . $result["Authority"]), $telegram->buildInlineKeyboardButton('انصراف', '', 'refused'))
-                                ];
-                                $msg_text = " مبلغ قابل پرداخت : $price تومان ";
-                                $msg = [
-                                    'chat_id' => $chat_id,
-                                    'text' => $msg_text,
-                                    'parse_mode' => 'HTML',
-                                    'reply_markup' => $telegram->buildInlineKeyboard($option)
-                                ];
-                                $telegram->sendMessage($msg);
-                            }else{
-                                $msg = [
-                                    'chat_id' => $chat_id,
-                                    'text' => 'مشکلی در ارتباط با درگاه پیش آمده',
-                                    'parse_mode' => 'HTML',
-                                ];
-                                $telegram->sendMessage($msg);
-                                return 200;
-                            }
+                        elseif ($cached->plan_id == 4) {
+
+                            $this->zarinInit(4,$text,$username,$userId,$chat_id,$telegram);
+                        }
+                        elseif ($cached->plan_id == 5) {
+
+                            $this->zarinInit(5,$text,$username,$userId,$chat_id,$telegram);
                         }
                     }
                 }
             }
+    }
+
+    private function zarinInit($planId,$text,$username,$userId,$chat_id,$telegram){
+
+        $plan = Plan::where('id',$planId)->first();
+        $price = $plan->price;
+        if (strpos($text, '@')) {
+            $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'email' => $text, 'plan_id' => $plan->id]);
+        } else {
+//                                $text = Num2En::en($text);
+            $zarrin = new Zarrin(['username' => $username, 'user_id' => $userId, 'amount' => $price, 'phone' => $text, 'plan_id' => $plan->id]);
+        }
+        $msg = [
+            'chat_id' => $chat_id,
+            'text' => 'لطفا منتظر بمانید',
+            'parse_mode' => 'HTML',
+        ];
+        $telegram->sendMessage($msg);
+
+        $result = $zarrin->create();
+        if($result != 404){
+            $option = [
+                array($telegram->buildInlineKeyboardButton('هدایت به درگاه پرداخت', 'https://www.zarinpal.com/pg/StartPay/' . $result["Authority"]), $telegram->buildInlineKeyboardButton('انصراف', '', 'refused'))
+            ];
+            $msg_text = " مبلغ قابل پرداخت : $price تومان ";
+            $msg = [
+                'chat_id' => $chat_id,
+                'text' => $msg_text,
+                'parse_mode' => 'HTML',
+                'reply_markup' => $telegram->buildInlineKeyboard($option)
+            ];
+            $telegram->sendMessage($msg);
+            return 200;
+        }else{
+            $msg = [
+                'chat_id' => $chat_id,
+                'text' => 'مشکلی در ارتباط با درگاه پیش آمده است. لطفا دوباره تلاش کنید',
+                'parse_mode' => 'HTML',
+            ];
+            $telegram->sendMessage($msg);
+
+            return 200;
+        }
     }
 
     private function paymentInit(){
@@ -244,11 +223,19 @@ class TelegramCommandController extends Controller
             'chat_id' => $chat_id,
             'text' => ' از حسن انتخاب شما کمال تشکر را داریم. برای خرید حساب روی سرویس مورد نظر کلیک کنید ',
             'parse_mode' => 'HTML',
-            'reply_markup' => $telegram->buildInlineKeyboard($options),
+            'reply_markup' => $telegram->buildInlineKeyboard($options)
         ];
 
-        $telegram->sendMessage($msg);
+        $options = [
 
+            array($telegram->buildInlineKeyBoardButton('تماس با ما',"https://t.me/JoyVpn_Support"),$telegram->buildInlineKeyBoardButton('لیست تراکنش‌ها',"",'transactions')),
+            array($telegram->buildInlineKeyBoardButton('شروع مجدد'))
+
+
+        ];
+//        Cache::forget($chat_id);
+
+        $telegram->sendMessage($msg);
     }
 
     private function restartBtn(){
@@ -287,7 +274,15 @@ class TelegramCommandController extends Controller
 //            Cache::put("$chat_id",['id'=>$chat_id,'value'=>3],1000);
             $this->cache->update(['plan_id'=> 2]);
             $this->planRegistration(2,$telegram);
-        }elseif($data == '0'){
+        }elseif ($data == '4'){
+            $this->cache->update(['plan_id'=> 4]);
+            $this->planRegistration(4,$telegram);
+        }
+        elseif ($data == '5'){
+            $this->cache->update(['plan_id'=> 5]);
+            $this->planRegistration(5,$telegram);
+        }
+        elseif($data == '0'){
 //            Cache::put("$chat_id",['id'=>$chat_id,'value'=>0],1000);
             $this->cache->update(['plan_id'=> 3]);
             $this->cache->update(['closed'=>1]);
@@ -423,10 +418,16 @@ class TelegramCommandController extends Controller
                 $telegram->sendMessage($msg);
             }
 
+
+        }
+        elseif ($data == 'transactionList'){
+            $this->transactionList();
+            $this->restartBtn();
+        }
         /*
         * ========= REFUSE BTN CLICKED ===========
         */
-        }elseif ($data == 'refused'){
+        elseif ($data == 'refused'){
 
            $this->refuseBtn();
             return 200;
@@ -579,7 +580,15 @@ class TelegramCommandController extends Controller
         $time = $plan->month;
 //        $service = Cache::get($chat_id.'_service')['value'];
         $service = $this->cache->service;
-        $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب، آدرس ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
+        if($id == 4){
+            $msg_text = "انتخاب شما حساب شرکتی $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب، آدرس ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
+        }elseif ($id == 5){
+            $msg_text = "انتخاب شما حساب خانوادگی $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب، آدرس ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
+        }
+        else{
+
+            $msg_text = "انتخاب شما حساب $time ماهه $service با قیمت $price تومان می‌باشد. لطفا جهت دریافت اطلاعات حساب، آدرس ایمیل و یا شماره موبایل خود را (به انگلیسی) وارد کنید.";
+        }
         $msg = [
             'chat_id' => $chat_id,
             'text' => $msg_text,
@@ -609,8 +618,11 @@ class TelegramCommandController extends Controller
         $service = $this->cache->service;
         if($service == 'open'){
             $options = [
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه (دوکاربره) '.Emoji::backhandIndexPointingRight(),"",'1')),
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی (دوکاربره) '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه (۲ کاربره) '.Emoji::backhandIndexPointingRight(),"",'1')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی (۲ کاربره) '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه شرکتی (۱۰ کاربره) '.Emoji::backhandIndexPointingRight(),'','4')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه خانوادگی (۵ کاربره) '.Emoji::backhandIndexPointingRight(),'','5')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::ledger().' لیست تراکنش‌ها '.Emoji::ledger(),'','transactionList')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::headphone().' پشتیبانی '.Emoji::headphone(),'https://t.me/JoyVpn_Support'))
@@ -618,11 +630,14 @@ class TelegramCommandController extends Controller
             ];
         }else{
             $options = [
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه (دوکاربره) '.Emoji::backhandIndexPointingRight(),"",'1')),
-                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی (دوکاربره) '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۱ ماهه (۲ کاربره) '.Emoji::backhandIndexPointingRight(),"",'1')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه اقتصادی (۲ کاربره) '.Emoji::backhandIndexPointingRight(),'','3')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه شرکتی (۱۰ کاربره) '.Emoji::backhandIndexPointingRight(),'','4')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::backhandIndexPointingLeft().' خرید حساب ۳ ماهه خانوادگی (۵ کاربره) '.Emoji::backhandIndexPointingRight(),'','5')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::smilingFaceWithSunglasses().' دریافت حساب رایگان تست '.Emoji::smilingFaceWithSunglasses(),'','0')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::ledger().' لیست تراکنش‌ها '.Emoji::ledger(),'','transactionList')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::globeShowingAmericas().' لیست سرورها '.Emoji::globeShowingAsiaAustralia(),'','server_list')),
-                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'http://joyvpn.xyz')),
+                array($telegram->buildInlineKeyBoardButton(Emoji::downArrow().' آموزش اتصال و دانلود '.Emoji::downArrow(),'https://joyvpn.xyz')),
                 array($telegram->buildInlineKeyBoardButton(Emoji::headphone().' پشتیبانی '.Emoji::headphone(),'https://t.me/JoyVpn_Support'))
 
             ];
@@ -636,14 +651,55 @@ class TelegramCommandController extends Controller
         $telegram = $this->telegram;
         $chat_id = $this->telegram->ChatID();
 //        Cache::forget($chat_id);
-        $msg = [
-            'chat_id' => $chat_id,
-            'text' => 'این آیتم در حال راه‌اندازی می‌باشد',
-            'parse_mode' => 'HTML',
-        ];
+        $transes = Transaction::where('user_id',$chat_id)->where('status','paid')->get();
+        if($transes->isEmpty()){
 
-        $telegram->sendMessage($msg);
+            $msg = [
+                'chat_id' => $chat_id,
+                'text' => Emoji::crossMark().' تراکنشی یافت نشد '.Emoji::crossMark(),
+                'parse_mode' => 'Html',
+            ];
+            $telegram->sendMessage($msg);
+        }else{
+
+            $string = Emoji::blueCircle().Emoji::blueCircle()."  اطلاعات تراکنش ها ".Emoji::blueCircle().Emoji::blueCircle();
+            $msg = [
+                'chat_id' => $chat_id,
+                'text' => $string,
+                'parse_mode' => 'Html',
+            ];
+            $telegram->sendMessage($msg);
+            foreach ($transes as $trans){
+                $amount = $trans->amount;
+                $date = \Morilog\Jalali\Jalalian::fromCarbon(Carbon::parse($trans->created_at))->format('%B %d، %Y');
+                $username = $trans->account->username;
+                if($trans->plan_id == 1){
+                    $plan = 'حساب ۱ ماهه cisco';
+                }elseif ($trans->plan_id == 2){
+                    $plan = 'حساب ۳ ماهه cisco';
+                }elseif ($trans->plan_id == 4){
+                    $plan = 'حساب ۳ ماهه شرکتی cisco';
+                }elseif ($trans->plan_id == 5){
+                    $plan = 'حساب ۳ ماهه خانوادگی cisco';
+                }
+                $string2 = "✅ کد تراکنش : $trans->trans_id
+💶 مبلغ پرداخت شده :  تومان $amount
+📆 تاریخ : $date
+🦸نام کاربری : $username
+⚙ نوع حساب :$plan ";
+                $msg = [
+                    'chat_id' => $chat_id,
+                    'text' => $string2,
+                    'parse_mode' => 'Html',
+                ];
+                $telegram->sendMessage($msg);
+            }
+        }
+
+
+
     }
+
 
     private function refuseBtn(){
         DB::beginTransaction();

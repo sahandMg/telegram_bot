@@ -180,13 +180,13 @@ class Zarrin_Tamdid
         if($this->request['type'] == 'ren'){
 
             $account = Accounts::where('plan_id',$trans->plan_id)->where('used',0)->first();
-            $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)]);
+            $account->update(['used'=>1,'user_id'=>$trans->user_id,'expires_at'=>Carbon::now()->addMonths($trans->plan->month)->addDays(7)]);
             $trans->update(['account_id'=>$account->id]);
 
         }else{
 
             $account = $trans->account;
-            $account->update(['expires_at'=>Carbon::parse($account->expires_at)->addMonth($account->plan->month)]);
+            $account->update(['expires_at'=>Carbon::parse($account->expires_at)->addMonth($account->plan->month)->addDays(7)]);
         }
         DB::commit();
         sendNotif::dispatch($trans,$account);

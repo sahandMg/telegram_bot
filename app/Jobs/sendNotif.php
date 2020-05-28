@@ -65,7 +65,8 @@ class sendNotif implements ShouldQueue
         ];
         $msg4 = [
             'chat_id' => $trans->user_id,
-            'text' => ' انقضا '.\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y'),
+//            'text' => ' انقضا '.\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y'),
+            'text' => ' انقضا '.\Morilog\Jalali\Jalalian::fromCarbon(Carbon::parse($this->account->expires_at))->format('%B %d، %Y'),
             'parse_mode' => 'HTML',
         ];
         $msg5 = [

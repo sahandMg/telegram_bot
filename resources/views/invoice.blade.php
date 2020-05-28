@@ -164,7 +164,8 @@
                         </div>
                         <div class="ends">
                             {{--<strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::now()->addMonths($plan->month))}}--}}
-                            <strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y')}}
+                            {{--<strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::now()->addMonths($plan->month)->format('%B %d، %Y')}}--}}
+                            <strong>انقضا</strong> {{\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($account->expires_at))->format('%B %d، %Y')}}
                         </div>
                     </div>
 
