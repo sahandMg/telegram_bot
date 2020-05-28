@@ -44,7 +44,12 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
               <caret line="655" column="0" selection-start-line="655" selection-start-column="0" selection-end-line="655" selection-end-column="0" />
-              <folding />
+              <folding>
+                <marker date="1590659554679" expanded="true" signature="20536:21135" ph="..." />
+                <marker date="1590659554679" expanded="true" signature="20702:20914" ph="..." />
+                <marker date="1590659554679" expanded="true" signature="20978:21126" ph="..." />
+                <marker date="1590659554679" expanded="true" signature="21006:21111" ph="{...}" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -407,12 +412,12 @@
       <workItem from="1590584347398" duration="4121000" />
       <workItem from="1590603177851" duration="217000" />
       <workItem from="1590617738935" duration="9631000" />
-      <workItem from="1590668382053" duration="15000" />
+      <workItem from="1590668382053" duration="44000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="266867000" />
+    <option name="totallyTimeSpent" value="266896000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1280" y="0" width="1920" height="1080" extended-state="6" />
@@ -823,7 +828,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="655" column="0" selection-start-line="655" selection-start-column="0" selection-end-line="655" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1590659554679" expanded="true" signature="20536:21135" ph="..." />
+            <marker date="1590659554679" expanded="true" signature="20702:20914" ph="..." />
+            <marker date="1590659554679" expanded="true" signature="20978:21126" ph="..." />
+            <marker date="1590659554679" expanded="true" signature="21006:21111" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
